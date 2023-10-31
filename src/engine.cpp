@@ -1,28 +1,26 @@
 #include "engine.hpp"
-#include <SDL2/SDL_image.h>
 #include <iostream>
 
 #define NO_FLAGS 0
 
 Engine::Engine(const char *window_title, int window_height, int window_width)
 {
-    int rendererFlags, windowFlags;
-    rendererFlags = SDL_RENDERER_ACCELERATED;
-    windowFlags = NO_FLAGS;
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != -1)
     {
-        this->window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, SDL_WINDOW_FULLSCREEN);
+        setRunning(1);
+        this->window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, SDL_WINDOW_RESIZABLE);
         if (this->window)
         {
             // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-            this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED);
+            this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
             if (this->renderer)
             {
                 std::cout << "Everything checks out" << std::endl;
             }
             else
             {
+                setRunning(0);
                 SDL_DestroyWindow(this->window);
                 SDL_Quit();
                 std::cout << "Failed to initialize SDL renderer: " << SDL_GetError() << std::endl;
@@ -31,6 +29,7 @@ Engine::Engine(const char *window_title, int window_height, int window_width)
         }
         else
         {
+            setRunning(0);
             SDL_Quit();
             std::cout << "Failed to initialize SDL window: " << SDL_GetError() << std::endl;
             return;
@@ -41,74 +40,140 @@ Engine::Engine(const char *window_title, int window_height, int window_width)
         std::cout << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
         return;
     }
-    this->game_logic = game_logic;
-
-    int imgFlags = IMG_INIT_WEBP | IMG_INIT_JPG | IMG_INIT_PNG;
-    IMG_Init(imgFlags);
 }
 
 Engine::~Engine()
 {
+    for (Image *image : this->backgrounds)
+    {
+        SDL_DestroyTexture(image->accessTexture());
+        SDL_FreeSurface(image->accessSurface());
+    }
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
-
-    for (TileArt ta : this->tile_arts)
-    {
-        SDL_DestroyTexture(ta);
-    }
-
     SDL_Quit();
     IMG_Quit();
 }
 
-void Engine::Run()
+void Engine::addLayer(const char *filename)
+{
+    Image *image = new Image(filename, this->renderer);
+    this->backgrounds.emplace_back(image);
+}
+
+Image *Engine::getLayer(int layer)
+{
+    return this->backgrounds.at(layer);
+}
+
+SDL_Rect Engine::setImageRenderArea(int x, int y, int width, int height)
+{
+    SDL_Rect srcRect = {x, y, width, height};
+    return srcRect;
+}
+
+SDL_Rect Engine::setScreenRenderArea(int x, int y, int width, int height)
+{
+    SDL_Rect dstRect = {x, y, width, height};
+    return dstRect;
+}
+
+void Engine ::Run()
 {
     SDL_Event event;
-
-    while (true)
+    while (isRunning)
     {
         SDL_PollEvent(&event);
-        SDL_RenderClear(this->renderer);
-
-        DrawTile(0, 100, 100);
 
         switch (event.type)
         {
         case SDL_QUIT:
-            return;
+            setRunning(0);
             break;
+
         default:
-            this->game_logic(this);
             break;
         }
-
-        SDL_RenderPresent(this->renderer);
     }
 }
 
-TileArtDescriptor Engine::LoadTileArt(std::string filename)
+void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
 {
-    // SDL_Surface* this_image = IMG_Load(filename.c_str());
-    //  SDL_SetSurfaceBlendMode(this_image, SDL_BLENDMODE_BLEND);
-    //  SDL_Texture* this_texture = SDL_CreateTextureFromSurface(this->renderer, this_image);
-    //  if (this_image == NULL)
-    //  {
-    //      std::cout << "Failed to load tile at " << filename << std::endl;
-    //      return -1;
-    //  }
+    img->setSrcRect(x, y, width, height);
+    img->setDstRect(x, y, ScreenWidth, ScreenHeight);
 
-    // this->tile_arts.push_back(this_image);
-    // return this->tile_arts.size() - 1;
+    SDL_Rect src = img->accessSrcRect();
+    SDL_Rect dst = img->accessDstRect();
+
+    SDL_RenderCopy(this->renderer, img->accessTexture(), &src, &dst);
 }
 
-void Engine::DrawTile(TileArtDescriptor ta, int x, int y)
+void Engine ::addTiles(const char *filename)
 {
-    SDL_Texture *texture = tile_arts.at(ta);
+    Tile art;
+    art.surf = IMG_Load(filename);
+    art.tex = SDL_CreateTextureFromSurface(renderer, art.surf);
+    SDL_FreeSurface(art.surf);
+    tiles.emplace_back(art);
+}
 
-    SDL_Rect dest;
-    dest.x = x;
-    dest.y = y;
-    SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+void Engine ::grid(int gridSize, int ScreenWidth, int ScreenHeight)
+{
+    int maxRows = ScreenHeight / gridSize;
 
-    SDL_RenderCopy(this->renderer, texture, NULL, &dest);
+    int maxCols = ScreenWidth / gridSize;
+
+    int adjustedGridSize = std::min(ScreenHeight / maxRows, ScreenWidth / maxCols);
+
+    for (int row = 0; row < maxRows; ++row)
+    {
+        for (int col = 0; col < maxCols; ++col)
+        {
+            SDL_RenderDrawLine(renderer, col * adjustedGridSize, 0, col * adjustedGridSize, ScreenHeight);
+            SDL_RenderDrawLine(renderer, 0, row * adjustedGridSize, ScreenWidth, row * adjustedGridSize);
+        }
+    }
+}
+
+void Engine ::initializeTileMap(int gridSize, int sWidth, int sHeight)
+{
+    const int numRows = sHeight / gridSize;
+    const int numCols = sWidth / gridSize;
+    this->tileMap.assign(numRows, std::vector<int>(numCols, -1));
+}
+
+void Engine ::tilemap(int gridSize, int ScreenWidth, int ScreenHeight, int mouseX, int mouseY)
+{
+    int numRows = ScreenHeight / gridSize;
+    int numCols = ScreenWidth / gridSize;
+    int cellX = mouseX / gridSize;
+    int cellY = mouseY / gridSize;
+
+    // Check array bounds
+    tileMap[cellY][cellX] = 0; // Assign a tile ID or texture ID
+}
+
+void Engine ::changeTile()
+{
+    int maxNum = tiles.size();
+    if (tileNum < maxNum)
+        ++tileNum;
+    if (tileNum == maxNum)
+        tileNum = 0;
+}
+
+void Engine ::renderTileMap()
+{
+    for (int row = 0; row < tileMap.size(); ++row)
+    {
+        for (int col = 0; col < tileMap[0].size(); ++col)
+        {
+            const int tileID = tileMap[row][col];
+            if (tileID != -1)
+            {
+                SDL_Rect tileRect = {col * gridSize, row * gridSize, gridSize, gridSize};
+                SDL_RenderCopy(renderer, tiles[tileNum].tex, NULL, &tileRect);
+            }
+        }
+    }
 }

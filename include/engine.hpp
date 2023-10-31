@@ -3,6 +3,8 @@
 #define SDL_MAIN_HANDLED
 
 #include "SDL2/SDL.h"
+#include <SDL2/SDL_image.h>
+#include "image.hpp"
 
 #include <functional>
 #include <string>
@@ -20,34 +22,56 @@ public:
     Engine(const char *window_title, int window_height, int window_width);
     ~Engine();
 
-    TileArtDescriptor LoadTileArt(std::string filename);
-    void PlaceTile(TileArtDescriptor tile, int x, int y, int layer_number);
-
-    SpriteArtDescriptor LoadSprite(std::string filename);
-    SpriteDescriptor CreateSprite(SpriteArtDescriptor sprite_art, int x, int y, int layer_number);
-    void MoveSprite(SpriteDescriptor sprite, int x, int y);
-    void ReplaceSpriteArt(SpriteDescriptor sprite, SpriteArtDescriptor new_sprite_art);
-    void SetSpriteAnimation(SpriteDescriptor sprite, std::vector<SpriteArtDescriptor> art, unsigned animation_speed);
-
-    int AddLayer(int tile_height, int tile_width);
-    void ScrollLayer(int layer_number, int dx, int dy);
+    void addLayer(const char* filename);
+    Image* getLayer(int layer);
+    SDL_Rect setImageRenderArea(int, int , int, int);
+    SDL_Rect setScreenRenderArea(int, int , int, int);
 
     SDL_Renderer *renderer;
     SDL_Window *window;
+
+    struct Tile 
+    {
+        SDL_Surface* surf;
+        SDL_Texture* tex;
+        int tileType;
+        bool isWalkable;
+    };
+
+
+    void setRunning(int running)
+    {
+        switch (running)
+        {
+        case 1:
+            isRunning = true;
+            break;
+        case 0:
+            isRunning = false;
+            break;
+        }
+    }
+    void setGridSize(int i){this->gridSize = i;}
+    int getGridSize(){return this->gridSize;}
+    
     void Run();
+    void setRenderCopy(Image*, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight);
+
+    void grid(int gridSize, int sWidth, int sHeight);
+    void initializeTileMap(int gridSize, int sWidth, int sHeight);
+    void renderTileMap();
+    void changeTile();
+    void addTiles(const char* filename);
+    void tilemap(int gridSize,int ScreenWidth, int ScreenHeight, int mouseX, int mouseY);
+
 
 private:
-    typedef SDL_Texture *TileArt;
-
-    std::vector<TileArt> tile_arts;
-    std::vector<std::vector<TileArtDescriptor>> layers;
-
-    // SDL_Renderer* renderer;
-    // SDL_Window* window;
-
-    std::function<void(Engine *)> game_logic;
-
-    void DrawTile(TileArtDescriptor ta, int x, int y);
+    std::vector<Image*> backgrounds;
+    std::vector<Tile> tiles;
+    std::vector<std::vector<int> > tileMap;
+    int gridSize;
+    int tileNum = 0;
+    bool isRunning;
 };
 
 #endif

@@ -1,57 +1,31 @@
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
 #include <iostream>
+#include <cstdint>
 #include "engine.hpp"
+#include "sprite.hpp"
 #define ScreenWidth 1920
 #define ScreenHeight 1080
-#define ScrollSpeed 10
-
-// if on windows:
-// change: images to ./test_assets/
+#define ScrollSpeed 1
 
 int main()
 {
-    Engine *game = new Engine("Game", 1920, 1080);
 
-    // Creates a surface from the file specified
-    SDL_Surface *image2 = IMG_Load("./test_assets/Clouds3.png");
-    if (!image2)
-    {
-        std::cout << "Failed to load image2 " << SDL_GetError() << std::endl;
-        SDL_DestroyRenderer(game->renderer);
-        SDL_DestroyWindow(game->window);
-        SDL_Quit();
-        return 1;
-    }
+    Engine *game = new Engine("Game", ScreenWidth, ScreenHeight);
+    Sprite *sprite = new Sprite("./test_assets/Elmo.png", game->renderer, 4, 8);
+    sprite->selectSprite(0, 0);
+    SDL_Rect temp = {0, 0, 128, 128};
+    game->addLayer("./test_assets/Clouds3.png");
+    game->addLayer("./test_assets/Grassy_Gary2.png");
 
-    // Creates a surface from the file specified
-    SDL_Surface *image = IMG_Load("./test_assets/Grassy_Gary2.png");
-    if (!image)
-    {
-        std::cout << "Failed to load image " << SDL_GetError() << std::endl;
-        SDL_DestroyRenderer(game->renderer);
-        SDL_DestroyWindow(game->window);
-        SDL_Quit();
-        return 1;
-    }
+    Image *image2 = game->getLayer(0); // Gets the first layer from the add layer vector
 
-    // Setting surface Blending modes
-    SDL_SetSurfaceBlendMode(image, SDL_BLENDMODE_BLEND);
-    SDL_SetSurfaceBlendMode(image2, SDL_BLENDMODE_BLEND);
+    game->addTiles("./test_assets/Dirt.png");
+    game->addTiles("./test_assets/deepDirt.png");
+    game->addTiles("./test_assets/Grass.png");
 
-    // Create Textures from the Surfaces
-    SDL_Texture *tex2 = SDL_CreateTextureFromSurface(game->renderer, image2);
-    SDL_Texture *tex1 = SDL_CreateTextureFromSurface(game->renderer, image);
-    //***********************************************************************************************Feature ^
+    game->setGridSize(64);
+    int gridSize = game->getGridSize();
+    game->initializeTileMap(gridSize, ScreenWidth, ScreenHeight);
 
-    // Src defines which portion of the image to render, and dst defines which part of the screen to render it to, these are needed to move the image
-    // The ground image had no rects, because it is static.
-    SDL_Rect srcRect = {0, 0, 320, image2->h};
-    SDL_Rect dstRect = {0, 0, ScreenWidth, ScreenHeight};
-    // SDL_Rect dstRect2 = {-dstRect.w,0,ScreenWidth,ScreenHeight}; //Copy of the first image, it's starting positon is set to the far  left of the screen for smooth scrolling
-    // SDL_Rect dstRect3 = {ScreenWidth,0,ScreenWidth,ScreenHeight};
-
-    SDL_UpdateWindowSurface(game->window);
     SDL_Event event;
     while (SDL_PollEvent(&event) >= 0)
     {
@@ -60,55 +34,37 @@ int main()
         case SDL_QUIT:
             exit(0);
             break;
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym)
+        case SDL_MOUSEBUTTONDOWN:
+            if (event.button.button == SDL_BUTTON_LEFT)
             {
-            case SDLK_a:
-                srcRect.x += -ScrollSpeed; // Increase the x position to move the image right
-                // If the images leave the screan bounds they will go to the other side of the screen and start scrolling again
-                if (srcRect.x <= 0)
-                    srcRect.x = image2->w - 320;
-                break;
-            case SDLK_d:
-                srcRect.x += ScrollSpeed; // Increase the x position to move the image right
-                // If the images leave the screan bounds they will go to the other side of the screen and start scrolling again
-                if (srcRect.x >= image2->w - 320)
-                    srcRect.x = 0;
-                break;
-            case SDLK_LEFT:                // Left arrow key
-                srcRect.x += -ScrollSpeed; // Increase the x position to move the image right
-                // If the images leave the screan bounds they will go to the other side of the screen and start scrolling again
-                if (srcRect.x <= 0)
-                    srcRect.x = image2->w - 320;
-                break;
-            case SDLK_RIGHT:              // Right arrow key
-                srcRect.x += ScrollSpeed; // Increase the x position to move the image right
-                // If the images leave the screan bounds they will go to the other side of the screen and start scrolling again
-                if (srcRect.x >= image2->w - 320)
-                    srcRect.x = 0;
-                break;
+                int mouseX = event.button.x;
+                int mouseY = event.button.y;
+                game->tilemap(gridSize, 1920, 1080, mouseX, mouseY);
             }
+            if (event.button.button == SDL_BUTTON_RIGHT)
+            {
+                game->changeTile();
+            }
+
+            break;
         }
         // Clears the renderer, then copies the background and background copy to the render target, and then the foreground is copied.
-        // Then it presents the render
         SDL_RenderClear(game->renderer);
-        SDL_RenderCopy(game->renderer, tex2, &srcRect, &dstRect);
-        SDL_RenderCopy(game->renderer, tex1, NULL, NULL);
+        game->setRenderCopy(image2, 0, 0, 320, 180, 1920, 1080);
+        // game->setRenderCopy(image, 0, 0, 320, 180, 1920, 1080);
+        game->grid(gridSize, ScreenWidth, ScreenHeight);
+
+        sprite->drawSelectedSprite(game->renderer, &temp);
+        game->renderTileMap();
         SDL_RenderPresent(game->renderer);
+        SDL_Delay(10);
     }
 
     // Cleaning up all the variables once SDL_Quit() is called. Destroying the textures and surfaces, and then assigning all pointers used to nullptr
-    SDL_DestroyTexture(tex1);
-    SDL_DestroyRenderer(game->renderer);
-    SDL_FreeSurface(image);
-    SDL_FreeSurface(image2);
-    SDL_DestroyWindow(game->window);
-
     game->window = nullptr;
     game->renderer = nullptr;
-    image = nullptr;
     image2 = nullptr;
 
-    SDL_Quit();
+    game->~Engine();
     return 0;
 }
