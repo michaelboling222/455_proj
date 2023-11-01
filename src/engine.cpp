@@ -15,7 +15,7 @@ Engine::Engine(const char *window_title, int window_height, int window_width)
             // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
             this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
             if (this->renderer)
-            {
+            {   
                 std::cout << "Everything checks out" << std::endl;
             }
             else
@@ -26,6 +26,7 @@ Engine::Engine(const char *window_title, int window_height, int window_width)
                 std::cout << "Failed to initialize SDL renderer: " << SDL_GetError() << std::endl;
                 return;
             }
+    
         }
         else
         {
@@ -42,9 +43,10 @@ Engine::Engine(const char *window_title, int window_height, int window_width)
     }
 }
 
+
 Engine::~Engine()
 {
-    for (Image *image : this->backgrounds)
+    for(Image* image: this->backgrounds)
     {
         SDL_DestroyTexture(image->accessTexture());
         SDL_FreeSurface(image->accessSurface());
@@ -55,60 +57,47 @@ Engine::~Engine()
     IMG_Quit();
 }
 
-void Engine::addLayer(const char *filename)
+
+void Engine:: addLayer(const char* filename)
 {
-    Image *image = new Image(filename, this->renderer);
+    Image* image = new Image(filename, this->renderer);
     this->backgrounds.emplace_back(image);
 }
 
-Image *Engine::getLayer(int layer)
+
+Image* Engine:: getLayer(int layer)
 {
     return this->backgrounds.at(layer);
 }
 
-SDL_Rect Engine::setImageRenderArea(int x, int y, int width, int height)
+
+SDL_Rect Engine:: setImageRenderArea(int x, int y, int width, int height)
 {
     SDL_Rect srcRect = {x, y, width, height};
     return srcRect;
 }
 
-SDL_Rect Engine::setScreenRenderArea(int x, int y, int width, int height)
+
+SDL_Rect Engine:: setScreenRenderArea(int x, int y, int width, int height)
 {
     SDL_Rect dstRect = {x, y, width, height};
     return dstRect;
 }
 
-void Engine ::Run()
-{
-    SDL_Event event;
-    while (isRunning)
-    {
-        SDL_PollEvent(&event);
 
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            setRunning(0);
-            break;
-
-        default:
-            break;
-        }
-    }
-}
-
-void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
+void Engine:: setRenderCopy(Image* img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
 {
     img->setSrcRect(x, y, width, height);
     img->setDstRect(x, y, ScreenWidth, ScreenHeight);
 
     SDL_Rect src = img->accessSrcRect();
     SDL_Rect dst = img->accessDstRect();
-
+   
     SDL_RenderCopy(this->renderer, img->accessTexture(), &src, &dst);
 }
 
-void Engine ::addTiles(const char *filename)
+
+void Engine :: addTiles(const char* filename)
 {
     Tile art;
     art.surf = IMG_Load(filename);
@@ -117,63 +106,73 @@ void Engine ::addTiles(const char *filename)
     tiles.emplace_back(art);
 }
 
-void Engine ::grid(int gridSize, int ScreenWidth, int ScreenHeight)
+
+void Engine :: grid(int gridSize, int ScreenWidth, int ScreenHeight)
 {
-    int maxRows = ScreenHeight / gridSize;
+    int maxRows = ScreenHeight / gridSize;  
 
     int maxCols = ScreenWidth / gridSize;
 
     int adjustedGridSize = std::min(ScreenHeight / maxRows, ScreenWidth / maxCols);
 
-    for (int row = 0; row < maxRows; ++row)
+    for (int row = 0; row < maxRows; ++row) 
     {
-        for (int col = 0; col < maxCols; ++col)
+        for (int col = 0; col < maxCols; ++col) 
         {
             SDL_RenderDrawLine(renderer, col * adjustedGridSize, 0, col * adjustedGridSize, ScreenHeight);
             SDL_RenderDrawLine(renderer, 0, row * adjustedGridSize, ScreenWidth, row * adjustedGridSize);
         }
-    }
 }
 
-void Engine ::initializeTileMap(int gridSize, int sWidth, int sHeight)
+}
+
+
+void Engine :: initializeTileMap(int gridSize, int sWidth, int sHeight)
 {
-    const int numRows = sHeight / gridSize;
-    const int numCols = sWidth / gridSize;
+    const int numRows = sHeight/gridSize;
+    const int numCols = sWidth/gridSize;
     this->tileMap.assign(numRows, std::vector<int>(numCols, -1));
 }
 
-void Engine ::tilemap(int gridSize, int ScreenWidth, int ScreenHeight, int mouseX, int mouseY)
-{
-    int numRows = ScreenHeight / gridSize;
-    int numCols = ScreenWidth / gridSize;
-    int cellX = mouseX / gridSize;
-    int cellY = mouseY / gridSize;
 
+void Engine :: tilemap(int gridSize,int ScreenWidth, int ScreenHeight, int mouseX, int mouseY)
+{  
+    int numRows = ScreenHeight/gridSize;
+    int numCols = ScreenWidth/gridSize;
+    int cellX = mouseX/gridSize;
+    int cellY = mouseY/gridSize;
+    
     // Check array bounds
     tileMap[cellY][cellX] = 0; // Assign a tile ID or texture ID
 }
 
-void Engine ::changeTile()
+
+void Engine :: changeTile()
 {
     int maxNum = tiles.size();
-    if (tileNum < maxNum)
+    if(tileNum < maxNum)
         ++tileNum;
-    if (tileNum == maxNum)
+    if(tileNum == maxNum)
         tileNum = 0;
 }
 
-void Engine ::renderTileMap()
+void Engine :: renderTileMap()
 {
-    for (int row = 0; row < tileMap.size(); ++row)
-    {
-        for (int col = 0; col < tileMap[0].size(); ++col)
-        {
+    for (int row = 0; row < tileMap.size(); ++row) {
+        for (int col = 0; col < tileMap[0].size(); ++col) {
             const int tileID = tileMap[row][col];
-            if (tileID != -1)
+            if (tileID != -1) 
             {
                 SDL_Rect tileRect = {col * gridSize, row * gridSize, gridSize, gridSize};
                 SDL_RenderCopy(renderer, tiles[tileNum].tex, NULL, &tileRect);
             }
         }
     }
+}
+
+void Engine :: getDeltaTime()
+{
+    Uint32 currentTime = SDL_GetTicks();
+    deltaTime = (currentTime - lastFrameTime) / 1000.0; // Convert to seconds
+    lastFrameTime = currentTime;
 }

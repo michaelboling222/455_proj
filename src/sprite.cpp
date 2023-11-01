@@ -1,28 +1,51 @@
 #include "sprite.hpp"
 
-Sprite ::Sprite(const char *filename, SDL_Renderer *rend, int row, int col)
+Sprite :: Sprite(const char *filename, SDL_Renderer* rend, int row, int col)
 {
+    sheetRow = row;
+    sheetCol = col;
+
     spriteSheet = IMG_Load(filename);
     spriteSheetTexture = SDL_CreateTextureFromSurface(rend, spriteSheet);
+    SDL_SetSurfaceBlendMode(spriteSheet, SDL_BLENDMODE_BLEND);
 
-    sprite.w = spriteSheet->w / col;
+    sprite.w = spriteSheet->w/col;
     sprite.h = spriteSheet->h / row;
 
     SDL_FreeSurface(spriteSheet);
 }
 
-Sprite ::~Sprite()
+Sprite :: ~Sprite()
 {
     SDL_DestroyTexture(spriteSheetTexture);
 }
 
-void Sprite ::selectSprite(int x, int y)
+void Sprite :: selectSprite(int x, int y, int spriteSize)
 {
     sprite.x = x * sprite.w;
     sprite.y = y * sprite.h;
+
+    toScreen.x = 0;
+    toScreen.y = 0;
+    toScreen.w = spriteSize;
+    toScreen.h = spriteSize;
 }
 
-void Sprite ::drawSelectedSprite(SDL_Renderer *renderer, SDL_Rect *posRect)
+void Sprite :: drawSelectedSprite(SDL_Renderer* renderer)
 {
-    SDL_RenderCopy(renderer, spriteSheetTexture, &sprite, posRect);
+    SDL_RenderCopy(renderer, spriteSheetTexture, &sprite, &toScreen);
+}
+
+
+void  Sprite :: editToScreen(int x, int y, int size, int size2)
+{
+    toScreen.x += x;
+    toScreen.y += y;
+    toScreen.w += size;
+    toScreen.h += size2;
+}
+
+SDL_Rect Sprite :: accessToScreen()
+{
+    return toScreen;
 }

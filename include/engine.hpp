@@ -5,6 +5,7 @@
 #include "SDL2/SDL.h"
 #include <SDL2/SDL_image.h>
 #include "image.hpp"
+#include "sprite.hpp"
 
 #include <functional>
 #include <string>
@@ -51,11 +52,18 @@ public:
             break;
         }
     }
+
+    bool Running()
+    {
+        return this->isRunning;
+    }
+
     void setGridSize(int i){this->gridSize = i;}
     int getGridSize(){return this->gridSize;}
     
-    void Run();
     void setRenderCopy(Image*, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight);
+    void getDeltaTime();
+    double returnDeltaTime(){return deltaTime;}
 
     void grid(int gridSize, int sWidth, int sHeight);
     void initializeTileMap(int gridSize, int sWidth, int sHeight);
@@ -69,6 +77,8 @@ private:
     std::vector<Image*> backgrounds;
     std::vector<Tile> tiles;
     std::vector<std::vector<int> > tileMap;
+    Uint32 lastFrameTime;
+    double deltaTime;
     int gridSize;
     int tileNum = 0;
     bool isRunning;
