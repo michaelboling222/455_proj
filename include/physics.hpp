@@ -8,7 +8,7 @@ public:
     void applyGravity(Sprite* sprite, double delta);
     bool resolveCollisions(Sprite* sprite);
 private:
-    int gravity = 9.8;
+    double gravity = 9.8;
 };
 
 #endif

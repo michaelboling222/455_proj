@@ -49,3 +49,24 @@ SDL_Rect Sprite :: accessToScreen()
 {
     return toScreen;
 }
+
+void Sprite :: spriteGrav()
+{
+    if(this->yVelocity > 0)
+        editToScreen(0, yVelocity, 0, 0);
+}
+
+void Sprite :: spriteMove()
+{
+    if(this->xVelocity > 0)
+        editToScreen(xVelocity, 0, 0, 0);
+    else if(this->xVelocity < 0)
+        editToScreen(xVelocity, 0, 0, 0);
+}
+
+
+void Sprite :: spriteJump()
+{
+    if(this->jumpVelocity < 0)
+        editToScreen(0,jumpVelocity, 0, 0);
+}
