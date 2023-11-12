@@ -9,10 +9,13 @@
 
 int main()
 {
+    double x = 0;
+    double y = 0;
+
     Engine *game = new Engine("Game", ScreenWidth, ScreenHeight);
     Sprite *sprite = new Sprite("./test_assets/Elmo.png", game->renderer, 5, 4);
 
-    sprite->selectSprite(0, 0, 224);
+    sprite->selectSprite(x, y, 224);
 
     game->addLayer("./test_assets/Clouds3.png");
     game->addLayer("./test_assets/Grassy_Gary2.png");
@@ -61,6 +64,13 @@ int main()
 
             case SDLK_SPACE:
                 game->jump(sprite, 500);
+                break;
+
+            case SDLK_4:
+                game->respawn(sprite);
+                break;
+            case SDLK_r:
+                game->respawn_x(sprite);
                 break;
             }
         }

@@ -84,6 +84,8 @@ public:
     void moveRight(Sprite *sprite, int speed);
     void moveLeft(Sprite *sprite, int speed);
     void jump(Sprite *sprite, int height);
+    void respawn(Sprite *sprite);
+    void respawn_x(Sprite *sprite);
 
 private:
     std::vector<Image *> backgrounds;

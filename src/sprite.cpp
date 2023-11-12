@@ -1,6 +1,6 @@
 #include "sprite.hpp"
 
-Sprite :: Sprite(const char *filename, SDL_Renderer* rend, int row, int col)
+Sprite ::Sprite(const char *filename, SDL_Renderer *rend, int row, int col)
 {
     sheetRow = row;
     sheetCol = col;
@@ -9,18 +9,18 @@ Sprite :: Sprite(const char *filename, SDL_Renderer* rend, int row, int col)
     spriteSheetTexture = SDL_CreateTextureFromSurface(rend, spriteSheet);
     SDL_SetSurfaceBlendMode(spriteSheet, SDL_BLENDMODE_BLEND);
 
-    sprite.w = spriteSheet->w/col;
+    sprite.w = spriteSheet->w / col;
     sprite.h = spriteSheet->h / row;
 
     SDL_FreeSurface(spriteSheet);
 }
 
-Sprite :: ~Sprite()
+Sprite ::~Sprite()
 {
     SDL_DestroyTexture(spriteSheetTexture);
 }
 
-void Sprite :: selectSprite(int x, int y, int spriteSize)
+void Sprite ::selectSprite(int x, int y, int spriteSize)
 {
     sprite.x = x * sprite.w;
     sprite.y = y * sprite.h;
@@ -31,13 +31,12 @@ void Sprite :: selectSprite(int x, int y, int spriteSize)
     toScreen.h = spriteSize;
 }
 
-void Sprite :: drawSelectedSprite(SDL_Renderer* renderer)
+void Sprite ::drawSelectedSprite(SDL_Renderer *renderer)
 {
     SDL_RenderCopy(renderer, spriteSheetTexture, &sprite, &toScreen);
 }
 
-
-void  Sprite :: editToScreen(int x, int y, int size, int size2)
+void Sprite ::editToScreen(int x, int y, int size, int size2)
 {
     toScreen.x += x;
     toScreen.y += y;
@@ -45,28 +44,38 @@ void  Sprite :: editToScreen(int x, int y, int size, int size2)
     toScreen.h += size2;
 }
 
-SDL_Rect Sprite :: accessToScreen()
+SDL_Rect Sprite ::accessToScreen()
 {
     return toScreen;
 }
 
-void Sprite :: spriteGrav()
+void Sprite ::spriteGrav()
 {
-    if(this->yVelocity > 0)
+    if (this->yVelocity > 0)
         editToScreen(0, yVelocity, 0, 0);
 }
 
-void Sprite :: spriteMove()
+void Sprite ::spriteMove()
 {
-    if(this->xVelocity > 0)
+    if (this->xVelocity > 0)
         editToScreen(xVelocity, 0, 0, 0);
-    else if(this->xVelocity < 0)
+    else if (this->xVelocity < 0)
         editToScreen(xVelocity, 0, 0, 0);
 }
 
-
-void Sprite :: spriteJump()
+void Sprite ::spriteJump()
 {
-    if(this->jumpVelocity < 0)
-        editToScreen(0,jumpVelocity, 0, 0);
+    if (this->jumpVelocity < 0)
+        editToScreen(0, jumpVelocity, 0, 0);
+}
+void Sprite ::spriteRespawn()
+{
+    toScreen.x = 0;
+    toScreen.y = 0;
+}
+void Sprite ::x_spriteRespawn()
+{
+    int temp = 0;
+    toScreen.y = temp;
+    editToScreen(0, toScreen.y, 0, 0);
 }

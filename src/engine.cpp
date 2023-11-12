@@ -1,4 +1,6 @@
 #include "engine.hpp"
+#include "sprite.hpp"
+
 #include <iostream>
 
 #define NO_FLAGS 0
@@ -14,6 +16,7 @@ Engine::Engine(const char *window_title, int window_width, int window_height)
     {
         getDeltaTime();
         setRunning(1);
+
         this->window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, SDL_WINDOW_RESIZABLE);
         if (this->window)
         {
@@ -240,4 +243,12 @@ void Engine ::jump(Sprite *sprite, int height)
     }
     else
         sprite->setJumpVelocity(0);
+}
+void Engine ::respawn(Sprite *sprite)
+{
+    sprite->spriteRespawn();
+}
+void Engine ::respawn_x(Sprite *sprite)
+{
+    sprite->x_spriteRespawn();
 }

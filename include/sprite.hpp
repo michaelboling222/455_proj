@@ -18,10 +18,17 @@ public:
     void setyVelocity(float v) { yVelocity = v; }
     void setxVelocity(float v) { xVelocity = v; }
     void setJumpVelocity(float v) { jumpVelocity = v; }
+    void set_xcord(float x) { x_cord = x; }
+    void set_ycord(float y) { y_cord = y; }
 
     void spriteGrav();
     void spriteJump();
     void spriteMove();
+    void spriteRespawn();
+    void x_spriteRespawn();
+
+    double ret_xcord() { return x_cord; }
+    double ret_ycord() { return y_cord; }
 
 private:
     SDL_Rect sprite;
@@ -31,6 +38,8 @@ private:
     SDL_Surface *spriteSheet;
     SDL_Texture *spriteSheetTexture;
 
+    double x_cord;
+    double y_cord;
     double yVelocity;
     double xVelocity;
     double jumpVelocity;

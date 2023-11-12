@@ -79,6 +79,7 @@
         "ios": "cpp",
         "locale": "cpp",
         "__nullptr": "cpp",
-        "__string": "cpp"
+        "__string": "cpp",
+        "fstream": "cpp"
     }
 }
