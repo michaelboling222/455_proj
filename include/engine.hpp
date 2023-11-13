@@ -70,7 +70,7 @@ public:
     int getGridSize() { return this->gridSize; }
 
     void setRenderCopy(Image *, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight);
-    void getDeltaTime();
+    void setDeltaTime(double delt) {deltaTime = delt;}
     double returnDeltaTime() { return deltaTime; }
 
     void grid(int gridSize, int sWidth, int sHeight);
@@ -94,7 +94,7 @@ private:
     std::vector<Tile> tiles;
     std::vector<std::vector<int> > tileMap;
     Uint64 lastFrameTime;
-    double gravity = 9.8;
+    double gravity = 400;
     double deltaTime;
     int gridSize;
     int tileNum = 0;

@@ -3,10 +3,10 @@
 #include "engine.hpp"
 #include "sprite.hpp"
 #include "physics.hpp"
-#define ScreenWidth 2560
-#define ScreenHeight 1440
+#define ScreenWidth 1920
+#define ScreenHeight 1080
 #define ScrollSpeed 1
-//Hello there
+
 int main()
 {
 
@@ -28,9 +28,14 @@ int main()
     int gridSize = game->getGridSize();
     game->initializeTileMap(gridSize, ScreenWidth, ScreenHeight);
 
+    Uint64 lastFrameTime = SDL_GetPerformanceCounter();
+
     SDL_Event event;
     while (SDL_PollEvent(&event) >= 0)
     {
+        Uint64 currentFrameTime = SDL_GetPerformanceCounter();
+        game->setDeltaTime((currentFrameTime - lastFrameTime) / static_cast<double>(SDL_GetPerformanceFrequency()));
+        lastFrameTime = currentFrameTime;
         switch (event.type)
         {
         case SDL_QUIT:
@@ -41,7 +46,7 @@ int main()
             {
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
-                game->tilemap(gridSize, 2560, 1440, mouseX, mouseY);
+                game->tilemap(gridSize, 1920, 1080, mouseX, mouseY);
             }
             if (event.button.button == SDL_BUTTON_RIGHT)
             {
@@ -62,7 +67,7 @@ int main()
                 break;
 
             case SDLK_SPACE:
-                game->jump(sprite, 20);
+                game->jump(sprite,20);
                 break;
 
             case SDLK_4:
@@ -90,8 +95,7 @@ int main()
         }
         // Clears the renderer, then copies the background and background copy to the render target, and then the foreground is copied.
         SDL_RenderClear(game->renderer);
-        game->getDeltaTime();
-        game->setRenderCopy(image2, 0, 0, 320, 180, 2560, 1440);
+        game->setRenderCopy(image2, 0, 0, 320, 180, 1920, 1080);
         game->grid(gridSize, ScreenWidth, ScreenHeight);
         game->renderTileMap();
         sprite->drawSelectedSprite(game->renderer);

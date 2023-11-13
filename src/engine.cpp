@@ -14,7 +14,6 @@ Engine::Engine(const char *window_title, int window_width, int window_height)
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != -1)
     {
-        getDeltaTime();
         setRunning(1);
 
         this->window = SDL_CreateWindow(window_title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, window_width, window_height, SDL_WINDOW_RESIZABLE);
@@ -168,12 +167,7 @@ void Engine ::renderTileMap()
     }
 }
 
-void Engine ::getDeltaTime()
-{
-    Uint64 currentTime = SDL_GetTicks64();
-    deltaTime = (currentTime - lastFrameTime) / 1000.0; // Convert to seconds
-    lastFrameTime = currentTime;
-}
+
 
 bool Engine ::resolveCollisions(Sprite *sprite)
 {
@@ -198,11 +192,12 @@ bool Engine ::resolveCollisions(Sprite *sprite)
     return false;
 }
 
+
 void Engine ::applyGravity(Sprite *sprite)
 {
     if (!resolveCollisions(sprite))
     {
-        sprite->setyVelocity(gravity);
+        sprite->setyVelocity(gravity *deltaTime);
         sprite->spriteGrav();
         // std::cout << "MOVING!!" << std::endl;
     }
