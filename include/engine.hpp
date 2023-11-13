@@ -30,7 +30,7 @@ public:
 
     //
     static const int JUMP_VELOCITY = 10;
-    static const int MAX_JUMP = 200;
+    static const int MAX_JUMP = 350;
 
     void addLayer(const char *filename);
     Image *getLayer(int layer);
@@ -86,6 +86,8 @@ public:
     void jump(Sprite *sprite, int height);
     void respawn(Sprite *sprite);
     void respawn_x(Sprite *sprite);
+    void spawn(Sprite *sprite);
+    void crouch(Sprite *sprite);
 
 private:
     std::vector<Image *> backgrounds;

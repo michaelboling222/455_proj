@@ -1,4 +1,5 @@
 #include "sprite.hpp"
+#include <iostream>
 
 Sprite ::Sprite(const char *filename, SDL_Renderer *rend, int row, int col)
 {
@@ -29,6 +30,11 @@ void Sprite ::selectSprite(int x, int y, int spriteSize)
     toScreen.y = 0;
     toScreen.w = spriteSize;
     toScreen.h = spriteSize;
+}
+void Sprite::changeSprite(int x, int y)
+{
+    sprite.x = x * sprite.w;
+    sprite.y = y * sprite.h;
 }
 
 void Sprite ::drawSelectedSprite(SDL_Renderer *renderer)
@@ -65,6 +71,7 @@ void Sprite ::spriteMove()
 
 void Sprite ::spriteJump()
 {
+
     if (this->jumpVelocity < 0)
         editToScreen(0, jumpVelocity, 0, 0);
 }
@@ -78,4 +85,15 @@ void Sprite ::x_spriteRespawn()
     int temp = 0;
     toScreen.y = temp;
     editToScreen(0, toScreen.y, 0, 0);
+}
+
+// there is 1 frame where the sprite will be shown in
+// top left corner...refer to changeSprite() to fix...
+void Sprite ::spriteCrouch()
+{
+    double xVal, yVal;
+    xVal = toScreen.x;
+    yVal = toScreen.y;
+    selectSprite(animate_x, animate_y, 150);
+    editToScreen(xVal, yVal, 0, 0);
 }

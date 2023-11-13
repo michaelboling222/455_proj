@@ -9,13 +9,11 @@
 
 int main()
 {
-    double x = 0;
-    double y = 0;
 
     Engine *game = new Engine("Game", ScreenWidth, ScreenHeight);
     Sprite *sprite = new Sprite("./test_assets/Elmo.png", game->renderer, 5, 4);
 
-    sprite->selectSprite(x, y, 224);
+    // sprite->selectSprite(0, 0, 224);
 
     game->addLayer("./test_assets/Clouds3.png");
     game->addLayer("./test_assets/Grassy_Gary2.png");
@@ -49,6 +47,7 @@ int main()
             {
                 game->changeTile();
             }
+
             break;
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym)
@@ -63,7 +62,7 @@ int main()
                 break;
 
             case SDLK_SPACE:
-                game->jump(sprite, 500);
+                game->jump(sprite, 20);
                 break;
 
             case SDLK_4:
@@ -71,6 +70,21 @@ int main()
                 break;
             case SDLK_r:
                 game->respawn_x(sprite);
+                break;
+            case SDLK_f:
+                game->spawn(sprite);
+                break;
+
+            case SDLK_c:
+                if (sprite->get_animatex() % 2 == 0)
+                {
+                    game->crouch(sprite);
+                }
+                else
+                {
+                    game->crouch(sprite);
+                }
+
                 break;
             }
         }

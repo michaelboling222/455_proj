@@ -228,17 +228,16 @@ void Engine ::jump(Sprite *sprite, int height)
 {
     if (resolveCollisions(sprite))
     {
-        // std::cout << "the value of height is...:" << height << std::endl;
-        for (int y = 0; y < height; y += 10)
+
+        for (int y = 0; y < height; y++)
         {
-            if (y > MAX_JUMP)
-            {
-                sprite->setJumpVelocity(-JUMP_VELOCITY);
-                break;
-            }
-            sprite->setJumpVelocity(-JUMP_VELOCITY);
+
+            sprite->setJumpVelocity(-y);
             sprite->spriteJump();
+
+            std::cout << "the val of jump vel is:" << sprite->getJumpVelocity() << std::endl;
         }
+
         // std::cout << "MOVING!!" << std::endl;
     }
     else
@@ -250,5 +249,24 @@ void Engine ::respawn(Sprite *sprite)
 }
 void Engine ::respawn_x(Sprite *sprite)
 {
+    sprite->set_animatex(0);
     sprite->x_spriteRespawn();
+}
+void Engine ::spawn(Sprite *sprite)
+{
+    std::cout << "the value of x animate is.." << sprite->get_animatex() << std::endl;
+    sprite->selectSprite(0, 0, 150);
+}
+void Engine ::crouch(Sprite *sprite)
+{
+    if (sprite->get_animatex() % 2 == 0)
+    {
+        sprite->set_animatex(3);
+        sprite->spriteCrouch();
+    }
+    else
+    {
+        sprite->set_animatex(0);
+        sprite->spriteCrouch();
+    }
 }
