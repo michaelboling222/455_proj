@@ -92,7 +92,7 @@ public:
 private:
     std::vector<Image *> backgrounds;
     std::vector<Tile> tiles;
-    std::vector<std::vector<int>> tileMap;
+    std::vector<std::vector<int> > tileMap;
     Uint64 lastFrameTime;
     double gravity = 9.8;
     double deltaTime;
