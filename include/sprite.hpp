@@ -2,6 +2,7 @@
 #define SPRITE_HPP
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
+#include <vector>
 
 class Sprite
 {
@@ -13,6 +14,7 @@ public:
     void drawSelectedSprite(SDL_Renderer *renderer);
     void Gravity(float);
     void editToScreen(int, int, int, int);
+    void editSprite(int, int, int, int);
     SDL_Rect accessToScreen();
 
     // setters:
@@ -30,6 +32,7 @@ public:
     double ret_ycord() { return y_cord; }
     int get_animatex() { return animate_x; }
     int get_animatey() { return animate_y; }
+    SDL_Texture* getSpriteSheetTexture() {return spriteSheetTexture;}
 
     void spriteGrav();
     void spriteJump();
@@ -55,6 +58,13 @@ private:
     double yVelocity;
     double xVelocity;
     double jumpVelocity;
+
+
+    std::vector<SDL_Texture> idle;
+    std::vector<SDL_Texture> walk;
+    std::vector<SDL_Texture> run;
+    std::vector<SDL_Texture> jump;
+    std::vector<SDL_Texture> die;
 };
 
 #endif

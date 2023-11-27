@@ -1,7 +1,7 @@
 #include "sprite.hpp"
 #include <iostream>
 
-Sprite ::Sprite(const char *filename, SDL_Renderer *rend, int row, int col)
+Sprite::Sprite(const char* filename, SDL_Renderer* rend, int row, int col)
 {
     sheetRow = row;
     sheetCol = col;
@@ -15,6 +15,7 @@ Sprite ::Sprite(const char *filename, SDL_Renderer *rend, int row, int col)
 
     SDL_FreeSurface(spriteSheet);
 }
+
 
 Sprite ::~Sprite()
 {
@@ -50,6 +51,14 @@ void Sprite ::editToScreen(int x, int y, int size, int size2)
     toScreen.h += size2;
 }
 
+void Sprite ::editSprite(int x, int y, int size, int size2)
+{
+    sprite.x += x;
+    sprite.y += y;
+    sprite.w += size;
+    sprite.h += size2;
+}
+
 SDL_Rect Sprite ::accessToScreen()
 {
     return toScreen;
@@ -71,9 +80,15 @@ void Sprite ::spriteMove()
 
 void Sprite ::spriteJump()
 {
-
+    int jump = 0;
     if (this->jumpVelocity < 0)
-        editToScreen(0, jumpVelocity, 0, 0);
+    {
+        while(jump > jumpVelocity)
+        {
+            editToScreen(0,jump, 0, 0);
+            --jump;
+        }
+    }
 }
 void Sprite ::spriteRespawn()
 {
