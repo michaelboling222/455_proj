@@ -25,6 +25,7 @@ void Sprite ::selectSprite(int x, int y, int spriteSize)
 {
     sprite.x = x * sprite.w;
     sprite.y = y * sprite.h;
+    std::cout << "the val of sprite.h is..." << sprite.h << std::endl;
 
     toScreen.x = 0;
     toScreen.y = 0;

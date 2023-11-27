@@ -13,7 +13,6 @@ public:
     void drawSelectedSprite(SDL_Renderer *renderer);
     void Gravity(float);
     void editToScreen(int, int, int, int);
-    SDL_Rect accessToScreen();
 
     // setters:
     void setyVelocity(float v) { yVelocity = v; }
@@ -30,6 +29,7 @@ public:
     double ret_ycord() { return y_cord; }
     int get_animatex() { return animate_x; }
     int get_animatey() { return animate_y; }
+    SDL_Rect accessToScreen();
 
     void spriteGrav();
     void spriteJump();
