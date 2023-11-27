@@ -125,14 +125,14 @@ void Engine ::grid(int gridSize, int ScreenWidth, int ScreenHeight)
     }
 }
 
-void Engine ::initializeTileMap(int gridSize, int sWidth, int sHeight)
+void Engine :: initializeTileMap(int gridSize, int sWidth, int sHeight)
 {
     const int numRows = sHeight / gridSize;
     const int numCols = sWidth / gridSize;
     this->tileMap.assign(numRows, std::vector<int>(numCols, -1));
 }
 
-void Engine ::tilemap(int gridSize, int ScreenWidth, int ScreenHeight, int mouseX, int mouseY)
+void Engine :: tilemap(int gridSize, int ScreenWidth, int ScreenHeight, int mouseX, int mouseY)
 {
     int numRows = ScreenHeight / gridSize;
     int numCols = ScreenWidth / gridSize;
@@ -209,49 +209,46 @@ void Engine ::moveRight(Sprite *sprite, int speed)
 {
     sprite->setxVelocity(speed);
     sprite->spriteMove();
-    // std::cout << "MOVING!!" << std::endl;
 }
 
 void Engine ::moveLeft(Sprite *sprite, int speed)
 {
     sprite->setxVelocity(-speed);
     sprite->spriteMove();
-    // std::cout << "MOVING!!" << std::endl;
 }
 
 void Engine ::jump(Sprite *sprite, int height)
 {
     if (resolveCollisions(sprite))
     {
-
-        for (int y = 0; y < height; y++)
-        {
-
-            sprite->setJumpVelocity(-y);
-            sprite->spriteJump();
-
-            std::cout << "the val of jump vel is:" << sprite->getJumpVelocity() << std::endl;
-        }
-
-        // std::cout << "MOVING!!" << std::endl;
+        sprite->setJumpVelocity(height);
+        sprite->spriteJump();
     }
     else
         sprite->setJumpVelocity(0);
 }
+
+
 void Engine ::respawn(Sprite *sprite)
 {
     sprite->spriteRespawn();
 }
+
+
 void Engine ::respawn_x(Sprite *sprite)
 {
     sprite->set_animatex(0);
     sprite->x_spriteRespawn();
 }
+
+
 void Engine ::spawn(Sprite *sprite)
 {
     std::cout << "the value of x animate is.." << sprite->get_animatex() << std::endl;
     sprite->selectSprite(0, 0, 150);
 }
+
+
 void Engine ::crouch(Sprite *sprite)
 {
     if (sprite->get_animatex() % 2 == 0)
