@@ -1,19 +1,21 @@
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
 #include "SDL2/SDL.h"
+#include <vector>
 #include "SDL2/SDL_image.h"
 
 class Sprite
 {
 public:
-    Sprite(const char *filename, SDL_Renderer *rend, int row, int col);
+    Sprite(const char* filename, SDL_Renderer* rend, int animType);
     ~Sprite();
 
     void selectSprite(int x, int y, int spriteSize);
     void drawSelectedSprite(SDL_Renderer *renderer);
     void Gravity(float);
     void editToScreen(int, int, int, int);
-    SDL_Rect accessToScreen();
+    void editSprite(int, int, int, int);
+    void spritePush(std::vector<SDL_Texture*>, SDL_Texture* tex);
 
     // setters:
     void setyVelocity(float v) { yVelocity = v; }
@@ -30,6 +32,7 @@ public:
     double ret_ycord() { return y_cord; }
     int get_animatex() { return animate_x; }
     int get_animatey() { return animate_y; }
+    SDL_Rect accessToScreen();
 
     void spriteGrav();
     void spriteJump();
@@ -45,8 +48,8 @@ private:
     SDL_Rect toScreen;
     int sheetRow;
     int sheetCol;
-    SDL_Surface *spriteSheet;
-    SDL_Texture *spriteSheetTexture;
+    SDL_Surface *spriteSurface;
+    SDL_Texture *spriteTexture;
 
     int animate_y = 0;
     int animate_x = 0;

@@ -67,7 +67,7 @@ int main()
                 break;
 
             case SDLK_SPACE:
-                game->jump(sprite,20);
+                game->jump(sprite, 20);
                 break;
 
             case SDLK_4:

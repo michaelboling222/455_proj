@@ -70,7 +70,7 @@ public:
     int getGridSize() { return this->gridSize; }
 
     void setRenderCopy(Image *, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight);
-    void setDeltaTime(double delt) {deltaTime = delt;}
+    void setDeltaTime(double delt) { deltaTime = delt; }
     double returnDeltaTime() { return deltaTime; }
 
     void grid(int gridSize, int sWidth, int sHeight);
@@ -99,6 +99,12 @@ private:
     int gridSize;
     int tileNum = 0;
     bool isRunning;
+
+    std::vector<Sprite*> idle;
+    std::vector<Sprite*> walk;
+    std::vector<Sprite*> run;
+    std::vector<Sprite*> jump;
+    std::vector<Sprite*> die;
 };
 
 #endif

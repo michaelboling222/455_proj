@@ -1,30 +1,36 @@
 #include "sprite.hpp"
 #include <iostream>
 
-Sprite ::Sprite(const char *filename, SDL_Renderer *rend, int row, int col)
+Sprite::Sprite(const char* filename, SDL_Renderer* rend, int animType)
 {
-    sheetRow = row;
-    sheetCol = col;
+    spriteSurface = IMG_Load(filename);
+    spriteTexture = SDL_CreateTextureFromSurface(rend, spriteSurface);
+    SDL_SetSurfaceBlendMode(spriteSurface, SDL_BLENDMODE_BLEND);
 
-    spriteSheet = IMG_Load(filename);
-    spriteSheetTexture = SDL_CreateTextureFromSurface(rend, spriteSheet);
-    SDL_SetSurfaceBlendMode(spriteSheet, SDL_BLENDMODE_BLEND);
+    switch (animType)
+    {
+    case 1:
+        spritePush(idle, spriteTexture);
+        break;
+    
+    default:
+        break;
+    }
 
-    sprite.w = spriteSheet->w / col;
-    sprite.h = spriteSheet->h / row;
-
-    SDL_FreeSurface(spriteSheet);
+    SDL_FreeSurface(spriteSurface);
 }
+
 
 Sprite ::~Sprite()
 {
-    SDL_DestroyTexture(spriteSheetTexture);
+    SDL_DestroyTexture(spriteTexture);
 }
 
 void Sprite ::selectSprite(int x, int y, int spriteSize)
 {
     sprite.x = x * sprite.w;
     sprite.y = y * sprite.h;
+    std::cout << "the val of sprite.h is..." << sprite.h << std::endl;
 
     toScreen.x = 0;
     toScreen.y = 0;
@@ -39,7 +45,7 @@ void Sprite::changeSprite(int x, int y)
 
 void Sprite ::drawSelectedSprite(SDL_Renderer *renderer)
 {
-    SDL_RenderCopy(renderer, spriteSheetTexture, &sprite, &toScreen);
+    SDL_RenderCopy(renderer, spriteTexture, &sprite, &toScreen);
 }
 
 void Sprite ::editToScreen(int x, int y, int size, int size2)
@@ -48,6 +54,14 @@ void Sprite ::editToScreen(int x, int y, int size, int size2)
     toScreen.y += y;
     toScreen.w += size;
     toScreen.h += size2;
+}
+
+void Sprite ::editSprite(int x, int y, int size, int size2)
+{
+    sprite.x += x;
+    sprite.y += y;
+    sprite.w += size;
+    sprite.h += size2;
 }
 
 SDL_Rect Sprite ::accessToScreen()
@@ -71,9 +85,15 @@ void Sprite ::spriteMove()
 
 void Sprite ::spriteJump()
 {
-
+    int jump = 0;
     if (this->jumpVelocity < 0)
-        editToScreen(0, jumpVelocity, 0, 0);
+    {
+        while(jump > jumpVelocity)
+        {
+            editToScreen(0,jump, 0, 0);
+            --jump;
+        }
+    }
 }
 void Sprite ::spriteRespawn()
 {
@@ -96,4 +116,9 @@ void Sprite ::spriteCrouch()
     yVal = toScreen.y;
     selectSprite(animate_x, animate_y, 150);
     editToScreen(xVal, yVal, 0, 0);
+}
+
+void Sprite :: spritePush(std::vector<SDL_Texture*> temp, SDL_Texture* tex)
+{
+    temp.emplace_back(tex);
 }
