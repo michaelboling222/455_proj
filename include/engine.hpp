@@ -92,13 +92,19 @@ public:
 private:
     std::vector<Image *> backgrounds;
     std::vector<Tile> tiles;
-    std::vector<std::vector<int>> tileMap;
+    std::vector<std::vector<int> > tileMap;
     Uint64 lastFrameTime;
     double gravity = 400;
     double deltaTime;
     int gridSize;
     int tileNum = 0;
     bool isRunning;
+
+    std::vector<Sprite*> idle;
+    std::vector<Sprite*> walk;
+    std::vector<Sprite*> run;
+    std::vector<Sprite*> jump;
+    std::vector<Sprite*> die;
 };
 
 #endif

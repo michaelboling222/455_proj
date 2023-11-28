@@ -1,24 +1,21 @@
 #ifndef SPRITE_HPP
 #define SPRITE_HPP
 #include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
 #include <vector>
+#include "SDL2/SDL_image.h"
 
 class Sprite
 {
 public:
-    Sprite(const char *filename, SDL_Renderer *rend, int row, int col);
+    Sprite(const char* filename, SDL_Renderer* rend, int animType);
     ~Sprite();
 
     void selectSprite(int x, int y, int spriteSize);
     void drawSelectedSprite(SDL_Renderer *renderer);
     void Gravity(float);
     void editToScreen(int, int, int, int);
-<<<<<<< HEAD
-=======
     void editSprite(int, int, int, int);
-    SDL_Rect accessToScreen();
->>>>>>> 4fd9e946e630007dcd1f391eb3210e004113c808
+    void spritePush(std::vector<SDL_Texture*>, SDL_Texture* tex);
 
     // setters:
     void setyVelocity(float v) { yVelocity = v; }
@@ -35,11 +32,7 @@ public:
     double ret_ycord() { return y_cord; }
     int get_animatex() { return animate_x; }
     int get_animatey() { return animate_y; }
-<<<<<<< HEAD
     SDL_Rect accessToScreen();
-=======
-    SDL_Texture* getSpriteSheetTexture() {return spriteSheetTexture;}
->>>>>>> 4fd9e946e630007dcd1f391eb3210e004113c808
 
     void spriteGrav();
     void spriteJump();
@@ -55,8 +48,8 @@ private:
     SDL_Rect toScreen;
     int sheetRow;
     int sheetCol;
-    SDL_Surface *spriteSheet;
-    SDL_Texture *spriteSheetTexture;
+    SDL_Surface *spriteSurface;
+    SDL_Texture *spriteTexture;
 
     int animate_y = 0;
     int animate_x = 0;
@@ -65,13 +58,6 @@ private:
     double yVelocity;
     double xVelocity;
     double jumpVelocity;
-
-
-    std::vector<SDL_Texture> idle;
-    std::vector<SDL_Texture> walk;
-    std::vector<SDL_Texture> run;
-    std::vector<SDL_Texture> jump;
-    std::vector<SDL_Texture> die;
 };
 
 #endif
