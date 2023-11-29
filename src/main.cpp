@@ -3,15 +3,15 @@
 #include "engine.hpp"
 #include "sprite.hpp"
 #include "physics.hpp"
-#define ScreenWidth 1920
-#define ScreenHeight 1080
+#define ScreenWidth 2560
+#define ScreenHeight 1440
 #define ScrollSpeed 1
 
 int main()
 {
 
     Engine *game = new Engine("Game", ScreenWidth, ScreenHeight);
-    Sprite *sprite = new Sprite("./test_assets/Elmo.png", game->renderer, 5, 4);
+    Sprite *sprite = new Sprite("./test_assets/otter_sprite_pack/otter_idle_1.png", game->renderer);
 
     // sprite->selectSprite(0, 0, 224);
 
@@ -46,7 +46,7 @@ int main()
             {
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
-                game->tilemap(gridSize, 1920, 1080, mouseX, mouseY);
+                game->tilemap(gridSize, 2560, 1440, mouseX, mouseY);
             }
             if (event.button.button == SDL_BUTTON_RIGHT)
             {
@@ -95,7 +95,7 @@ int main()
         }
         // Clears the renderer, then copies the background and background copy to the render target, and then the foreground is copied.
         SDL_RenderClear(game->renderer);
-        game->setRenderCopy(image2, 0, 0, 320, 180, 1920, 1080);
+        game->setRenderCopy(image2, 0, 0, 320, 180, 2560, 1440);
         game->grid(gridSize, ScreenWidth, ScreenHeight);
         game->renderTileMap();
         sprite->drawSelectedSprite(game->renderer);
