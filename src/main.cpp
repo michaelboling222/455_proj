@@ -52,7 +52,15 @@ int main()
             {
                 game->changeTile();
             }
+            break;
 
+        case SDL_MOUSEMOTION:
+            if (event.button.button == SDL_BUTTON_LEFT)
+            {
+                int mouseX = event.button.x;
+                int mouseY = event.button.y;
+                game->tilemap(gridSize, 2560, 1440, mouseX, mouseY);
+            }
             break;
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym)
