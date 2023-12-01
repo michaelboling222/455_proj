@@ -89,7 +89,9 @@ SDL_Rect Engine::setScreenRenderArea(int x, int y, int width, int height)
 
 void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
 {
-    img->setSrcRect(x, y, width, height);
+    // adding new position for x val to where the backround image will be rendered:
+    img->setSrcRect(get_backroundLocation(), y, width, height);
+    // set the new location applicable to the users screen dimensions:
     img->setDstRect(x, y, ScreenWidth, ScreenHeight);
 
     SDL_Rect src = img->accessSrcRect();
@@ -167,8 +169,6 @@ void Engine ::renderTileMap()
     }
 }
 
-
-
 bool Engine ::resolveCollisions(Sprite *sprite)
 {
     SDL_Rect spriteBoundingBox = sprite->accessToScreen();
@@ -192,12 +192,11 @@ bool Engine ::resolveCollisions(Sprite *sprite)
     return false;
 }
 
-
 void Engine ::applyGravity(Sprite *sprite)
 {
     if (!resolveCollisions(sprite))
     {
-        sprite->setyVelocity(gravity *deltaTime);
+        sprite->setyVelocity(gravity * deltaTime);
         sprite->spriteGrav();
         // std::cout << "MOVING!!" << std::endl;
     }

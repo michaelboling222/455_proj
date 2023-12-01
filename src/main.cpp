@@ -19,7 +19,6 @@ int main()
     game->addLayer("./test_assets/Grassy_Gary2.png");
 
     Image *image2 = game->getLayer(0); // Gets the first layer from the add layer vector
-
     game->addTiles("./test_assets/Dirt.png");
     game->addTiles("./test_assets/deepDirt.png");
     game->addTiles("./test_assets/Grass.png");
@@ -65,13 +64,16 @@ int main()
         case SDL_KEYDOWN:
             switch (event.key.keysym.sym)
             {
-
+                // add scrolling here so when sprite moves forward the backround will scroll with it...
             case SDLK_d:
                 game->moveRight(sprite, 10);
+                game->set_backroundLocation(game->get_backroundLocation() + ScrollSpeed);
                 break;
-
+                // same logic except for backwards...
             case SDLK_a:
                 game->moveLeft(sprite, 10);
+                game->set_backroundLocation(game->get_backroundLocation() - ScrollSpeed);
+
                 break;
 
             case SDLK_SPACE:

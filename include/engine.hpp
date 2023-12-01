@@ -54,6 +54,7 @@ public:
         {
         case 1:
             isRunning = true;
+
             break;
         case 0:
             isRunning = false;
@@ -70,7 +71,7 @@ public:
     int getGridSize() { return this->gridSize; }
 
     void setRenderCopy(Image *, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight);
-    void setDeltaTime(double delt) {deltaTime = delt;}
+    void setDeltaTime(double delt) { deltaTime = delt; }
     double returnDeltaTime() { return deltaTime; }
 
     void grid(int gridSize, int sWidth, int sHeight);
@@ -88,17 +89,23 @@ public:
     void respawn_x(Sprite *sprite);
     void spawn(Sprite *sprite);
     void crouch(Sprite *sprite);
+    //================================
+    // setters
+    void set_backroundLocation(int x) { scroll_back_horizontal = x; }
+    // getters
+    int get_backroundLocation() { return scroll_back_horizontal; }
 
 private:
     std::vector<Image *> backgrounds;
     std::vector<Tile> tiles;
-    std::vector<std::vector<int> > tileMap;
+    std::vector<std::vector<int>> tileMap;
     Uint64 lastFrameTime;
     double gravity = 400;
     double deltaTime;
     int gridSize;
     int tileNum = 0;
     bool isRunning;
+    int scroll_back_horizontal;
 };
 
 #endif
