@@ -1,0 +1,3 @@
+image2->accessSrcRect().x += -ScrollSpeed; // Increase the x position to move the image right
+        if (srcRect.x <= 0)        // If the images leave the screan bounds they will go to the other side of the screen and start scrolling again
+            srcRect.x = image2->accessSurface()->w - 320;
