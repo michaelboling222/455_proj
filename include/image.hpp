@@ -8,22 +8,23 @@
 class Image
 {
 private:
-    SDL_Surface* surface;
-    SDL_Texture* texture;
+    SDL_Surface *surface;
+    SDL_Texture *texture;
     SDL_Rect srcRect;
     SDL_Rect dstRect;
-public:
-    Image(const char* filename, SDL_Renderer*);
-    ~Image();    
 
-    SDL_Surface* accessSurface()
+public:
+    Image(const char *filename, SDL_Renderer *);
+    ~Image();
+
+    SDL_Surface *accessSurface()
     {
         return this->surface;
     }
 
-    SDL_Texture*  accessTexture()
+    SDL_Texture *accessTexture()
     {
-        return this ->texture;
+        return this->texture;
     }
 
     void setSrcRect(int x, int y, int width, int height)

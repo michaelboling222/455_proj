@@ -64,29 +64,34 @@ Engine::~Engine()
     IMG_Quit();
 }
 
+// add image and push it to backrounds vector
 void Engine::addLayer(const char *filename)
 {
     Image *image = new Image(filename, this->renderer);
     this->backgrounds.emplace_back(image);
 }
 
+// will be used to get the image that was pushed into the backrounds vector
 Image *Engine::getLayer(int layer)
 {
     return this->backgrounds.at(layer);
 }
 
+//*
 SDL_Rect Engine::setImageRenderArea(int x, int y, int width, int height)
 {
     SDL_Rect srcRect = {x, y, width, height};
     return srcRect;
 }
 
+//*
 SDL_Rect Engine::setScreenRenderArea(int x, int y, int width, int height)
 {
     SDL_Rect dstRect = {x, y, width, height};
     return dstRect;
 }
 
+// function to render image on screen
 void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
 {
     // adding new position for x val to where the backround image will be rendered:
@@ -100,6 +105,8 @@ void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int 
     SDL_RenderCopy(this->renderer, img->accessTexture(), &src, &dst);
 }
 
+// function to add appropriate image(s) to a tiles vector of Tile obj's
+// it will contain the rendered texture of the given img
 void Engine ::addTiles(const char *filename)
 {
     Tile art;
@@ -109,6 +116,7 @@ void Engine ::addTiles(const char *filename)
     tiles.emplace_back(art);
 }
 
+// renders grid on screen
 void Engine ::grid(int gridSize, int ScreenWidth, int ScreenHeight)
 {
     int maxRows = ScreenHeight / gridSize;
@@ -127,8 +135,10 @@ void Engine ::grid(int gridSize, int ScreenWidth, int ScreenHeight)
     }
 }
 
+// does proper initalization and manipulates the tileMap vector based on given parameters of the function
 void Engine ::initializeTileMap(int gridSize, int sWidth, int sHeight)
 {
+
     const int numRows = sHeight / gridSize;
     const int numCols = sWidth / gridSize;
     this->tileMap.assign(numRows, std::vector<int>(numCols, -1));
@@ -249,6 +259,13 @@ void Engine ::respawn_x(Sprite *sprite)
 void Engine ::spawn(Sprite *sprite)
 {
     std::cout << "the value of x animate is.." << sprite->get_animatex() << std::endl;
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            sprite->selectSprite(i, j, 150);
+        }
+    }
     sprite->selectSprite(0, 0, 150);
 }
 void Engine ::crouch(Sprite *sprite)

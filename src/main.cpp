@@ -15,7 +15,7 @@ int main()
 
     // sprite->selectSprite(0, 0, 224);
 
-    game->addLayer("./test_assets/Clouds3.png");
+    game->addLayer("./test_assets/forest.png");
     game->addLayer("./test_assets/Grassy_Gary2.png");
 
     Image *image2 = game->getLayer(0); // Gets the first layer from the add layer vector
@@ -103,10 +103,11 @@ int main()
                 break;
             }
         }
-        // Clears the renderer, then copies the background and background copy to the render target, and then the foreground is copied.
+        // 320,180
+        //  Clears the renderer, then copies the background and background copy to the render target, and then the foreground is copied.
         SDL_RenderClear(game->renderer);
-        game->setRenderCopy(image2, 0, 0, 320, 180, 2560, 1440);
-        game->grid(gridSize, ScreenWidth, ScreenHeight);
+        game->setRenderCopy(image2, 0, 0, 700, 180, 2560, 1440);
+        // game->grid(gridSize, ScreenWidth, ScreenHeight);
         game->renderTileMap();
         sprite->drawSelectedSprite(game->renderer);
         game->resolveCollisions(sprite);

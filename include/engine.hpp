@@ -105,7 +105,7 @@ private:
     int gridSize;
     int tileNum = 0;
     bool isRunning;
-    int scroll_back_horizontal;
+    int scroll_back_horizontal = 0;
 };
 
 #endif
