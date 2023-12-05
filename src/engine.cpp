@@ -263,15 +263,9 @@ void Engine ::respawn_x(Sprite *sprite)
 void Engine ::spawn(Sprite *sprite)
 {
     std::cout << "the value of x animate is.." << sprite->get_animatex() << std::endl;
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 2; j++)
-        {
-            sprite->selectSprite(i, j, 150);
-        }
-    }
-    sprite->selectSprite(0, 0, 150);
+    sprite->selectSprite(0, 0, 128);
 }
+
 void Engine ::crouch(Sprite *sprite)
 {
     if (sprite->get_animatex() % 2 == 0)

@@ -11,7 +11,7 @@ int main()
 {
 
     Engine *game = new Engine("Game", ScreenWidth, ScreenHeight);
-    Sprite *sprite = new Sprite("./test_assets/otter_sprite_pack/otter_idle_1.png", game->renderer);
+    Sprite *sprite = new Sprite("./test_assets/Otter_Idle.png", game->renderer, 2, 2);
 
     // sprite->selectSprite(0, 0, 224);
 
@@ -112,6 +112,7 @@ int main()
         sprite->drawSelectedSprite(game->renderer);
         game->resolveCollisions(sprite);
         game->applyGravity(sprite);
+        sprite->deccelerate();
         SDL_RenderPresent(game->renderer);
     }
 
