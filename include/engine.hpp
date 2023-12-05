@@ -92,8 +92,12 @@ public:
     //================================
     // setters
     void set_backroundLocation(int x) { scroll_back_horizontal = x; }
+    void set_Screen_width(int x) { Screen_width = x; }
+    void set_Screen_height(int x) { Screen_height = x; }
     // getters
     int get_backroundLocation() { return scroll_back_horizontal; }
+    int get_Screen_width() { return Screen_width; }
+    int get_Screen_height() { return Screen_height; }
 
 private:
     std::vector<Image *> backgrounds;
@@ -106,6 +110,8 @@ private:
     int tileNum = 0;
     bool isRunning;
     int scroll_back_horizontal = 0;
+    int Screen_width;
+    int Screen_height;
 };
 
 #endif

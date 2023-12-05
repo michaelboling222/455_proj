@@ -45,7 +45,7 @@ int main()
             {
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
-                game->tilemap(gridSize, 2560, 1440, mouseX, mouseY);
+                game->tilemap(gridSize, game->get_Screen_width(), game->get_Screen_height(), mouseX, mouseY);
             }
             if (event.button.button == SDL_BUTTON_RIGHT)
             {
@@ -58,7 +58,7 @@ int main()
             {
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
-                game->tilemap(gridSize, 2560, 1440, mouseX, mouseY);
+                game->tilemap(gridSize, game->get_Screen_width(), game->get_Screen_height(), mouseX, mouseY);
             }
             break;
         case SDL_KEYDOWN:
@@ -106,7 +106,7 @@ int main()
         // 320,180
         //  Clears the renderer, then copies the background and background copy to the render target, and then the foreground is copied.
         SDL_RenderClear(game->renderer);
-        game->setRenderCopy(image2, 0, 0, 700, 180, 2560, 1440);
+        game->setRenderCopy(image2, 0, 0, 700, 180, game->get_Screen_width(), game->get_Screen_height());
         // game->grid(gridSize, ScreenWidth, ScreenHeight);
         game->renderTileMap();
         sprite->drawSelectedSprite(game->renderer);

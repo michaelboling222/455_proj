@@ -21,8 +21,12 @@ Engine::Engine(const char *window_title, int window_width, int window_height)
         {
             // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
             this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+            set_Screen_width(window_width);
+            set_Screen_height(window_height);
+
             if (this->renderer)
             {
+
                 std::cout << "Everything checks out" << std::endl;
                 std::cout << "height is" << this->window_height << std::endl;
                 std::cout << "width is" << this->window_width << std::endl;
