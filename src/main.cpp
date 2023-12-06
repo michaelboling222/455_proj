@@ -34,6 +34,8 @@ int main()
 
     Uint64 lastFrameTime = SDL_GetPerformanceCounter();
 
+    std::vector<int> &test_vector_backround = game->get_backroundLocation();
+
     SDL_Event event;
     while (SDL_PollEvent(&event) >= 0)
     {
@@ -72,6 +74,12 @@ int main()
                 // add scrolling here so when sprite moves forward the backround will scroll with it...
             case SDLK_d:
                 game->moveRight(sprite, 10);
+
+                for (int i = 0; i < test_vector_backround.size(); i++)
+                {
+                    game->set_backroundLocation(test_vector_backround[i] + ScrollSpeed2);
+                }
+                test_vector_backround = game->get_backroundLocation();
 
                 game->set_backroundLocation(game->get_backroundLocation() + ScrollSpeed);
                 game->set_backroundLocation2(game->get_backroundLocation2() + ScrollSpeed2);

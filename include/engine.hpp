@@ -92,7 +92,8 @@ public:
     std::vector<Image *> backgrounds;
     //================================
     // setters
-    void set_backroundLocation(int x) { scroll_back_horizontal = x; }
+    void set_backroundLocation(int x) { scroll_back_horizontal.push_back(x); }
+    // void set_backroundLocation(int x) { scroll_back_horizontal = x; }
     void set_backroundLocation2(int x) { scroll_back_horizontal2 = x; }
     void set_backroundLocation3(int x) { scroll_back_horizontal3 = x; }
     void set_backroundLocation4(int x) { scroll_back_horizontal4 = x; }
@@ -100,7 +101,8 @@ public:
     void set_Screen_width(int x) { Screen_width = x; }
     void set_Screen_height(int x) { Screen_height = x; }
     // getters
-    int get_backroundLocation() { return scroll_back_horizontal; }
+    std::vector<int> &get_backroundLocation() { return scroll_back_horizontal; }
+    // int get_backroundLocation() { return scroll_back_horizontal; }
     int get_backroundLocation2() { return scroll_back_horizontal2; }
     int get_backroundLocation3() { return scroll_back_horizontal3; }
     int get_backroundLocation4() { return scroll_back_horizontal4; }
@@ -117,7 +119,9 @@ private:
     int gridSize;
     int tileNum = 0;
     bool isRunning;
-    int scroll_back_horizontal = 0;
+
+    std::vector<int> scroll_back_horizontal;
+    // int scroll_back_horizontal = 0;
     int scroll_back_horizontal2 = 0;
     int scroll_back_horizontal3 = 0;
     int scroll_back_horizontal4 = 0;
