@@ -6,6 +6,7 @@ Features to add :
 - implement an additional backround layer (grass/path layer that is the bottom half of the screen)
 - find new backrounds for scrolling 
 - be able to remove tiles
+- make function to get screen width and height
 =============================================================
 
 Things to fix 

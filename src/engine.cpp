@@ -21,8 +21,12 @@ Engine::Engine(const char *window_title, int window_width, int window_height)
         {
             // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
             this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+            set_Screen_width(window_width);
+            set_Screen_height(window_height);
+
             if (this->renderer)
             {
+
                 std::cout << "Everything checks out" << std::endl;
                 std::cout << "height is" << this->window_height << std::endl;
                 std::cout << "width is" << this->window_width << std::endl;
@@ -92,17 +96,34 @@ SDL_Rect Engine::setScreenRenderArea(int x, int y, int width, int height)
 }
 
 // function to render image on screen
-void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
+void Engine::setRenderCopy(std::vector<Image *> &img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
 {
     // adding new position for x val to where the backround image will be rendered:
-    img->setSrcRect(get_backroundLocation(), y, width, height);
+    img[0]->setSrcRect(get_backroundLocation(), y, width, height);
+    img[1]->setSrcRect(get_backroundLocation2(), y, width, height);
+    img[2]->setSrcRect(get_backroundLocation3(), y, width, height);
+    // img[3]->setSrcRect(get_backroundLocation4(), y, width, height);
+
     // set the new location applicable to the users screen dimensions:
-    img->setDstRect(x, y, ScreenWidth, ScreenHeight);
+    img[0]->setDstRect(x, y, ScreenWidth, ScreenHeight);
 
-    SDL_Rect src = img->accessSrcRect();
-    SDL_Rect dst = img->accessDstRect();
+    img[1]->setDstRect(x, y, ScreenWidth, ScreenHeight);
+    img[2]->setDstRect(x, y, ScreenWidth, ScreenHeight);
+    // img[3]->setDstRect(x, y, ScreenWidth, ScreenHeight);
 
-    SDL_RenderCopy(this->renderer, img->accessTexture(), &src, &dst);
+    SDL_Rect src = img[0]->accessSrcRect();
+    SDL_Rect dst = img[0]->accessDstRect();
+    SDL_Rect src2 = img[1]->accessSrcRect();
+    SDL_Rect dst2 = img[1]->accessDstRect();
+    SDL_Rect src3 = img[2]->accessSrcRect();
+    SDL_Rect dst3 = img[2]->accessDstRect();
+    // SDL_Rect src4 = img[3]->accessSrcRect();
+    // SDL_Rect dst4 = img[3]->accessDstRect();
+
+    SDL_RenderCopy(this->renderer, img[0]->accessTexture(), &src, &dst);
+    SDL_RenderCopy(this->renderer, img[1]->accessTexture(), &src2, &dst2);
+    SDL_RenderCopy(this->renderer, img[2]->accessTexture(), &src3, &dst3);
+    // SDL_RenderCopy(this->renderer, img[3]->accessTexture(), &src4, &dst4);
 }
 
 // function to add appropriate image(s) to a tiles vector of Tile obj's

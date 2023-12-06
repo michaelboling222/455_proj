@@ -6,6 +6,7 @@
 #define ScreenWidth 2560
 #define ScreenHeight 1440
 #define ScrollSpeed 1
+#define ScrollSpeed2 2
 
 int main()
 {
@@ -15,10 +16,14 @@ int main()
 
     // sprite->selectSprite(0, 0, 224);
 
-    game->addLayer("./test_assets/forest.png");
-    game->addLayer("./test_assets/Grassy_Gary2.png");
+    game->addLayer("./test_assets/cloud_f_4.png");
+    // game->addLayer("./test_assets/forest_2.png");
+    game->addLayer("./test_assets/tst_for_3.png");
+    // game->addLayer("./test_assets/back[2].png");
+    game->addLayer("./test_assets/front[4].png");
 
     Image *image2 = game->getLayer(0); // Gets the first layer from the add layer vector
+    game->backgrounds.push_back(image2);
     game->addTiles("./test_assets/Dirt.png");
     game->addTiles("./test_assets/deepDirt.png");
     game->addTiles("./test_assets/Grass.png");
@@ -45,7 +50,7 @@ int main()
             {
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
-                game->tilemap(gridSize, 2560, 1440, mouseX, mouseY);
+                game->tilemap(gridSize, game->get_Screen_width(), game->get_Screen_height(), mouseX, mouseY);
             }
             if (event.button.button == SDL_BUTTON_RIGHT)
             {
@@ -58,7 +63,7 @@ int main()
             {
                 int mouseX = event.button.x;
                 int mouseY = event.button.y;
-                game->tilemap(gridSize, 2560, 1440, mouseX, mouseY);
+                game->tilemap(gridSize, game->get_Screen_width(), game->get_Screen_height(), mouseX, mouseY);
             }
             break;
         case SDL_KEYDOWN:
@@ -67,12 +72,22 @@ int main()
                 // add scrolling here so when sprite moves forward the backround will scroll with it...
             case SDLK_d:
                 game->moveRight(sprite, 10);
+
                 game->set_backroundLocation(game->get_backroundLocation() + ScrollSpeed);
+                game->set_backroundLocation2(game->get_backroundLocation2() + ScrollSpeed2);
+                // game->set_backroundLocation4(game->get_backroundLocation4() + 2.5);
+
+                game->set_backroundLocation3(game->get_backroundLocation3() + 3);
+
                 break;
                 // same logic except for backwards...
             case SDLK_a:
                 game->moveLeft(sprite, 10);
                 game->set_backroundLocation(game->get_backroundLocation() - ScrollSpeed);
+                game->set_backroundLocation2(game->get_backroundLocation2() - ScrollSpeed2);
+                // game->set_backroundLocation4(game->get_backroundLocation4() - 2.5);
+
+                game->set_backroundLocation3(game->get_backroundLocation3() - 3);
 
                 break;
 
@@ -106,7 +121,7 @@ int main()
         // 320,180
         //  Clears the renderer, then copies the background and background copy to the render target, and then the foreground is copied.
         SDL_RenderClear(game->renderer);
-        game->setRenderCopy(image2, 0, 0, 700, 180, 2560, 1440);
+        game->setRenderCopy(game->backgrounds, 0, 0, 1920, 1080, game->get_Screen_width(), game->get_Screen_height());
         // game->grid(gridSize, ScreenWidth, ScreenHeight);
         game->renderTileMap();
         sprite->drawSelectedSprite(game->renderer);
