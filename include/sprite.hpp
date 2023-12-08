@@ -7,7 +7,7 @@
 class Sprite
 {
 public:
-    Sprite(const char *filename, SDL_Renderer *rend, int row, int col);
+    Sprite(const char *filename, SDL_Renderer *rend);
     ~Sprite();
 
     void selectSprite(int x, int y, int spriteSize);
@@ -15,24 +15,15 @@ public:
     void Gravity(float);
     void editToScreen(int, int, int, int);
     SDL_Rect accessToScreen();
-    void deccelerate();
 
     // setters:
     void setyVelocity(float v) { yVelocity = v; }
     void setxVelocity(float v) { xVelocity = v; }
-    void setxMaxSpeed(float v) { xMaxSpeed = v; }
-    void setyMaxSpeed(float v) { yMaxSpeed = v; }
     void setJumpVelocity(float v) { jumpVelocity = v; }
     void set_xcord(float x) { x_cord = x; }
     void set_ycord(float y) { y_cord = y; }
     void set_animatex(int x) { animate_x = x; }
     void set_animatey(int y) { animate_y = y; }
-    void resetVelocity()
-    {
-        xVelocity = 0;
-        yVelocity = 0;
-    }
-    void setState(const char *state);
 
     // getters:
     double getJumpVelocity() { return jumpVelocity; }
@@ -40,7 +31,6 @@ public:
     double ret_ycord() { return y_cord; }
     int get_animatex() { return animate_x; }
     int get_animatey() { return animate_y; }
-    bool getState();
 
     void spriteGrav();
     void spriteJump();
@@ -63,16 +53,11 @@ private:
     int animate_x = 0;
     double x_cord;
     double y_cord;
-
-    double xMaxSpeed;
-    double yMaxSpeed;
     double yVelocity;
     double xVelocity;
     double jumpVelocity;
 
-    bool stateWalk;
-    bool stateIdle;
-    bool stateJump;
+    std::vector<Sprite *> idle;
 };
 
 #endif

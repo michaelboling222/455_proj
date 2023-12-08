@@ -70,7 +70,7 @@ public:
     void setGridSize(int i) { this->gridSize = i; }
     int getGridSize() { return this->gridSize; }
 
-    void setRenderCopy(Image *, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight);
+    void setRenderCopy(std::vector<Image *> &img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight);
     void setDeltaTime(double delt) { deltaTime = delt; }
     double returnDeltaTime() { return deltaTime; }
 
@@ -89,18 +89,26 @@ public:
     void respawn_x(Sprite *sprite);
     void spawn(Sprite *sprite);
     void crouch(Sprite *sprite);
+    std::vector<Image *> backgrounds;
     //================================
     // setters
     void set_backroundLocation(int x) { scroll_back_horizontal = x; }
+    void set_backroundLocation2(int x) { scroll_back_horizontal2 = x; }
+    void set_backroundLocation3(int x) { scroll_back_horizontal3 = x; }
+    void set_backroundLocation4(int x) { scroll_back_horizontal4 = x; }
+
     void set_Screen_width(int x) { Screen_width = x; }
     void set_Screen_height(int x) { Screen_height = x; }
     // getters
     int get_backroundLocation() { return scroll_back_horizontal; }
+    int get_backroundLocation2() { return scroll_back_horizontal2; }
+    int get_backroundLocation3() { return scroll_back_horizontal3; }
+    int get_backroundLocation4() { return scroll_back_horizontal4; }
+
     int get_Screen_width() { return Screen_width; }
     int get_Screen_height() { return Screen_height; }
 
 private:
-    std::vector<Image *> backgrounds;
     std::vector<Tile> tiles;
     std::vector<std::vector<int>> tileMap;
     Uint64 lastFrameTime;
@@ -110,8 +118,13 @@ private:
     int tileNum = 0;
     bool isRunning;
     int scroll_back_horizontal = 0;
+    int scroll_back_horizontal2 = 0;
+    int scroll_back_horizontal3 = 0;
+    int scroll_back_horizontal4 = 0;
+
     int Screen_width;
     int Screen_height;
+    // std::vector<Image *> backgrounds;
 };
 
 #endif
