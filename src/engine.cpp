@@ -102,14 +102,15 @@ void Engine::setRenderCopy(std::vector<Image *> &img, int x, int y, int width, i
     img[0]->setSrcRect(get_backroundLocation(), y, width, height);
     img[1]->setSrcRect(get_backroundLocation2(), y, width, height);
     img[2]->setSrcRect(get_backroundLocation3(), y, width, height);
-    // img[3]->setSrcRect(get_backroundLocation4(), y, width, height);
+    img[3]->setSrcRect(get_backroundLocation4(), y, width, height);
+    img[4]->setSrcRect(get_backroundLocation5(), y, width, height);
 
     // set the new location applicable to the users screen dimensions:
     img[0]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-
     img[1]->setDstRect(x, y, ScreenWidth, ScreenHeight);
     img[2]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-    // img[3]->setDstRect(x, y, ScreenWidth, ScreenHeight);
+    img[3]->setDstRect(x, y, ScreenWidth, ScreenHeight);
+    img[4]->setDstRect(x, y, ScreenWidth, ScreenHeight);
 
     SDL_Rect src = img[0]->accessSrcRect();
     SDL_Rect dst = img[0]->accessDstRect();
@@ -117,13 +118,16 @@ void Engine::setRenderCopy(std::vector<Image *> &img, int x, int y, int width, i
     SDL_Rect dst2 = img[1]->accessDstRect();
     SDL_Rect src3 = img[2]->accessSrcRect();
     SDL_Rect dst3 = img[2]->accessDstRect();
-    // SDL_Rect src4 = img[3]->accessSrcRect();
-    // SDL_Rect dst4 = img[3]->accessDstRect();
+    SDL_Rect src4 = img[3]->accessSrcRect();
+    SDL_Rect dst4 = img[3]->accessDstRect();
+    SDL_Rect src5 = img[4]->accessSrcRect();
+    SDL_Rect dst5 = img[4]->accessDstRect();
 
     SDL_RenderCopy(this->renderer, img[0]->accessTexture(), &src, &dst);
     SDL_RenderCopy(this->renderer, img[1]->accessTexture(), &src2, &dst2);
     SDL_RenderCopy(this->renderer, img[2]->accessTexture(), &src3, &dst3);
-    // SDL_RenderCopy(this->renderer, img[3]->accessTexture(), &src4, &dst4);
+    SDL_RenderCopy(this->renderer, img[3]->accessTexture(), &src4, &dst4);
+    SDL_RenderCopy(this->renderer, img[4]->accessTexture(), &src5, &dst5);
 }
 
 // function to add appropriate image(s) to a tiles vector of Tile obj's

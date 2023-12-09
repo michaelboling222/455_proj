@@ -15,12 +15,11 @@ int main()
     Sprite *sprite = new Sprite("./test_assets/otter_sprite_pack/otter_idle_1.png", game->renderer);
 
     // sprite->selectSprite(0, 0, 224);
-
-    game->addLayer("./test_assets/cloud_f_4.png");
-    // game->addLayer("./test_assets/forest_2.png");
-    game->addLayer("./test_assets/tst_for_3.png");
-    // game->addLayer("./test_assets/back[2].png");
-    game->addLayer("./test_assets/front[4].png");
+    game->addLayer("./test_assets/m[1].png");
+    game->addLayer("./test_assets/revised_pics/layer_3.png");
+    game->addLayer("./test_assets/ed[2].png");
+    game->addLayer("./test_assets/ed[0].png");
+    game->addLayer("./test_assets/front_layer.png");
 
     Image *image2 = game->getLayer(0); // Gets the first layer from the add layer vector
     game->backgrounds.push_back(image2);
@@ -33,8 +32,6 @@ int main()
     game->initializeTileMap(gridSize, ScreenWidth, ScreenHeight);
 
     Uint64 lastFrameTime = SDL_GetPerformanceCounter();
-
-    std::vector<int> &test_vector_backround = game->get_backroundLocation();
 
     SDL_Event event;
     while (SDL_PollEvent(&event) >= 0)
@@ -75,27 +72,22 @@ int main()
             case SDLK_d:
                 game->moveRight(sprite, 10);
 
-                for (int i = 0; i < test_vector_backround.size(); i++)
-                {
-                    game->set_backroundLocation(test_vector_backround[i] + ScrollSpeed2);
-                }
-                test_vector_backround = game->get_backroundLocation();
-
                 game->set_backroundLocation(game->get_backroundLocation() + ScrollSpeed);
                 game->set_backroundLocation2(game->get_backroundLocation2() + ScrollSpeed2);
-                // game->set_backroundLocation4(game->get_backroundLocation4() + 2.5);
-
                 game->set_backroundLocation3(game->get_backroundLocation3() + 3);
+                game->set_backroundLocation4(game->get_backroundLocation4() + 4);
+                game->set_backroundLocation5(game->get_backroundLocation5() + 5);
 
                 break;
                 // same logic except for backwards...
             case SDLK_a:
                 game->moveLeft(sprite, 10);
+
                 game->set_backroundLocation(game->get_backroundLocation() - ScrollSpeed);
                 game->set_backroundLocation2(game->get_backroundLocation2() - ScrollSpeed2);
-                // game->set_backroundLocation4(game->get_backroundLocation4() - 2.5);
-
                 game->set_backroundLocation3(game->get_backroundLocation3() - 3);
+                game->set_backroundLocation4(game->get_backroundLocation4() - 4);
+                game->set_backroundLocation5(game->get_backroundLocation5() - 5);
 
                 break;
 
