@@ -6,22 +6,19 @@
 #define ScreenWidth 2560
 #define ScreenHeight 1440
 #define ScrollSpeed 1
-#define ScrollSpeed2 2
 
 int main()
 {
 
     Engine *game = new Engine("Game", ScreenWidth, ScreenHeight);
-    Sprite *sprite = new Sprite("./test_assets/otter_sprite_pack/otter_idle_1.png", game->renderer);
+    Sprite *sprite = new Sprite("./test_assets/Otter_Sprite_Sheet.png", game->renderer, 3, 12);
 
     // sprite->selectSprite(0, 0, 224);
-    game->addLayer("./test_assets/revised_pics/layer_3.png");
-    game->addLayer("./test_assets/finally.png");
-    game->addLayer("./test_assets/5555.png");
-    game->addLayer("./test_assets/revised_pics/front_layer.png");
+
+    game->addLayer("./test_assets/forest.png");
+    game->addLayer("./test_assets/Grassy_Gary2.png");
 
     Image *image2 = game->getLayer(0); // Gets the first layer from the add layer vector
-    game->backgrounds.push_back(image2);
     game->addTiles("./test_assets/Dirt.png");
     game->addTiles("./test_assets/deepDirt.png");
     game->addTiles("./test_assets/Grass.png");
@@ -69,26 +66,18 @@ int main()
             {
                 // add scrolling here so when sprite moves forward the backround will scroll with it...
             case SDLK_d:
-                game->moveRight(sprite, 10);
-
+                game->moveRight(sprite, 15);
                 game->set_backroundLocation(game->get_backroundLocation() + ScrollSpeed);
-                game->set_backroundLocation2(game->get_backroundLocation2() + ScrollSpeed2);
-                game->set_backroundLocation3(game->get_backroundLocation3() + 3);
-                game->set_backroundLocation4(game->get_backroundLocation4() + 4);
-
                 break;
                 // same logic except for backwards...
             case SDLK_a:
-                game->moveLeft(sprite, 10);
+                game->moveLeft(sprite, 15);
                 game->set_backroundLocation(game->get_backroundLocation() - ScrollSpeed);
-                game->set_backroundLocation2(game->get_backroundLocation2() - ScrollSpeed2);
-                game->set_backroundLocation3(game->get_backroundLocation3() - 3);
-                game->set_backroundLocation4(game->get_backroundLocation4() - 4);
 
                 break;
 
             case SDLK_SPACE:
-                game->jump(sprite, 20);
+                game->jump(sprite, 10);
                 break;
 
             case SDLK_4:
@@ -100,29 +89,21 @@ int main()
             case SDLK_f:
                 game->spawn(sprite);
                 break;
-
-            case SDLK_c:
-                if (sprite->get_animatex() % 2 == 0)
-                {
-                    game->crouch(sprite);
-                }
-                else
-                {
-                    game->crouch(sprite);
-                }
-
-                break;
             }
         }
         // 320,180
         //  Clears the renderer, then copies the background and background copy to the render target, and then the foreground is copied.
         SDL_RenderClear(game->renderer);
-        game->setRenderCopy(game->backgrounds, 0, 0, 1920, 1080, game->get_Screen_width(), game->get_Screen_height());
+        game->setRenderCopy(image2, 0, 0, 700, 180, game->get_Screen_width(), game->get_Screen_height());
         // game->grid(gridSize, ScreenWidth, ScreenHeight);
         game->renderTileMap();
         sprite->drawSelectedSprite(game->renderer);
         game->resolveCollisions(sprite);
         game->applyGravity(sprite);
+        sprite->deccelerate();
+        sprite->setState();
+        sprite->animate(0,1, 2, 12);
+        sprite->spriteJump();
         SDL_RenderPresent(game->renderer);
     }
 

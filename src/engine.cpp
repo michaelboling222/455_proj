@@ -96,33 +96,18 @@ SDL_Rect Engine::setScreenRenderArea(int x, int y, int width, int height)
 }
 
 // function to render image on screen
-void Engine::setRenderCopy(std::vector<Image *> &img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
+void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
 {
     // adding new position for x val to where the backround image will be rendered:
-    img[0]->setSrcRect(get_backroundLocation(), y, width, height);
-    img[1]->setSrcRect(get_backroundLocation2(), y, width, height);
-    img[2]->setSrcRect(get_backroundLocation3(), y, width, height);
-    img[3]->setSrcRect(get_backroundLocation4(), y, width, height);
-
+    img->setSrcRect(get_backroundLocation(), y, width, height);
     // set the new location applicable to the users screen dimensions:
-    img[0]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-    img[1]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-    img[2]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-    img[3]->setDstRect(x, y, ScreenWidth, ScreenHeight);
+    img->setDstRect(x, y, ScreenWidth, ScreenHeight);
 
-    SDL_Rect src = img[0]->accessSrcRect();
-    SDL_Rect dst = img[0]->accessDstRect();
-    SDL_Rect src2 = img[1]->accessSrcRect();
-    SDL_Rect dst2 = img[1]->accessDstRect();
-    SDL_Rect src3 = img[2]->accessSrcRect();
-    SDL_Rect dst3 = img[2]->accessDstRect();
-    SDL_Rect src4 = img[3]->accessSrcRect();
-    SDL_Rect dst4 = img[3]->accessDstRect();
 
-    SDL_RenderCopy(this->renderer, img[0]->accessTexture(), &src, &dst);
-    SDL_RenderCopy(this->renderer, img[1]->accessTexture(), &src2, &dst2);
-    SDL_RenderCopy(this->renderer, img[2]->accessTexture(), &src3, &dst3);
-    SDL_RenderCopy(this->renderer, img[3]->accessTexture(), &src4, &dst4);
+    SDL_Rect src = img->accessSrcRect();
+    SDL_Rect dst = img->accessDstRect();
+
+    SDL_RenderCopy(this->renderer, img->accessTexture(), &src, &dst);
 }
 
 // function to add appropriate image(s) to a tiles vector of Tile obj's
@@ -199,28 +184,63 @@ void Engine ::renderTileMap()
     }
 }
 
-bool Engine ::resolveCollisions(Sprite *sprite)
+bool Engine::resolveCollisions(Sprite* sprite) 
 {
     SDL_Rect spriteBoundingBox = sprite->accessToScreen();
-    for (int row = 0; row < tileMap.size(); ++row)
+    for (int row = 0; row < tileMap.size(); ++row) 
     {
-        for (int col = 0; col < tileMap[0].size(); ++col)
+        for (int col = 0; col < tileMap[0].size(); ++col) 
         {
-            if (tileMap[row][col] == 0)
+            if (tileMap[row][col] == 0) 
             {
                 SDL_Rect tileBoundingBox = {col * gridSize, row * gridSize, gridSize, gridSize};
-                if (SDL_HasIntersection(&spriteBoundingBox, &tileBoundingBox))
+                SDL_Rect intersection;
+                if (SDL_IntersectRect(&spriteBoundingBox, &tileBoundingBox, &intersection) == SDL_TRUE) 
                 {
-                    // Handle the collision
-                    // For example, stop the sprite from falling
-                    // std::cout << "COLLISION!" << std::endl;
-                    return true;
+                    // Collision detected
+
+                    // Calculate the intersection area dimensions
+                    int intersectionWidth = intersection.w;
+                    int intersectionHeight = intersection.h;
+
+                    // Determine collision on sides (left, right, top, bottom) of the sprite
+                    int horizontalDistance = spriteBoundingBox.x - tileBoundingBox.x;
+                    int verticalDistance = spriteBoundingBox.y - tileBoundingBox.y;
+
+                    // Calculate the overlap on each side
+                    int overlapRight = (spriteBoundingBox.x + spriteBoundingBox.w) - tileBoundingBox.x;
+                    int overlapLeft = (tileBoundingBox.x + tileBoundingBox.w) - spriteBoundingBox.x;
+                    int overlapTop = (tileBoundingBox.y + tileBoundingBox.h) - spriteBoundingBox.y;
+                    int overlapBottom = (spriteBoundingBox.y + spriteBoundingBox.h) - tileBoundingBox.y;
+
+                    // Determine which side(s) have collision and reverse momentum accordingly
+                    if (overlapRight > 0 && overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom) 
+                    {
+                        // Collision on the right side of the sprite
+                        sprite->reverseHorizontalMomentum();
+                    } else if (overlapLeft > 0 && overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom) 
+                    {
+                        // Collision on the left side of the sprite
+                        sprite->reverseHorizontalMomentum();
+                    } else if (overlapTop > 0 && overlapTop < overlapRight && overlapTop < overlapLeft && overlapTop < overlapBottom) 
+                    {
+                        // Collision on the top side of the sprite
+                        sprite->reverseVerticalMomentum();
+                    } else if (overlapBottom > 0 && overlapBottom < overlapRight && overlapBottom < overlapLeft && overlapBottom < overlapTop) 
+                    {
+                        // Collision on the bottom side of the sprite
+                        sprite->reverseVerticalMomentum();
+                    }
+                    return true; // Exit after the first collision detected
                 }
             }
         }
     }
     return false;
 }
+
+
+
 
 void Engine ::applyGravity(Sprite *sprite)
 {
@@ -236,36 +256,25 @@ void Engine ::applyGravity(Sprite *sprite)
 
 void Engine ::moveRight(Sprite *sprite, int speed)
 {
-    sprite->setxVelocity(speed);
+    sprite->setxMaxSpeed(speed);
     sprite->spriteMove();
-    // std::cout << "MOVING!!" << std::endl;
 }
+
 
 void Engine ::moveLeft(Sprite *sprite, int speed)
 {
-    sprite->setxVelocity(-speed);
+    sprite->setxMaxSpeed(-speed);
     sprite->spriteMove();
-    // std::cout << "MOVING!!" << std::endl;
 }
+
 
 void Engine ::jump(Sprite *sprite, int height)
 {
     if (resolveCollisions(sprite))
     {
-
-        for (int y = 0; y < height; y++)
-        {
-
-            sprite->setJumpVelocity(-y);
-            sprite->spriteJump();
-
-            std::cout << "the val of jump vel is:" << sprite->getJumpVelocity() << std::endl;
-        }
-
-        // std::cout << "MOVING!!" << std::endl;
+        sprite->setyMaxSpeed(height);
+        sprite->setJumpState();
     }
-    else
-        sprite->setJumpVelocity(0);
 }
 void Engine ::respawn(Sprite *sprite)
 {
@@ -279,25 +288,5 @@ void Engine ::respawn_x(Sprite *sprite)
 void Engine ::spawn(Sprite *sprite)
 {
     std::cout << "the value of x animate is.." << sprite->get_animatex() << std::endl;
-    for (int i = 0; i < 4; i++)
-    {
-        for (int j = 0; j < 2; j++)
-        {
-            sprite->selectSprite(i, j, 150);
-        }
-    }
-    sprite->selectSprite(0, 0, 150);
-}
-void Engine ::crouch(Sprite *sprite)
-{
-    if (sprite->get_animatex() % 2 == 0)
-    {
-        sprite->set_animatex(3);
-        sprite->spriteCrouch();
-    }
-    else
-    {
-        sprite->set_animatex(0);
-        sprite->spriteCrouch();
-    }
+    sprite->selectSprite(0, 0, 128);
 }
