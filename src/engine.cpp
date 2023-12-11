@@ -96,53 +96,35 @@ SDL_Rect Engine::setScreenRenderArea(int x, int y, int width, int height)
 }
 
 // function to render image on screen
-void Engine::setRenderCopy(std::vector<Image *> &img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
+void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight)
 {
     // adding new position for x val to where the backround image will be rendered:
-    img[0]->setSrcRect(get_backroundLocation(), y, width, height);
-    img[1]->setSrcRect(get_backroundLocation2(), y, width, height);
-    img[2]->setSrcRect(get_backroundLocation3(), y, width, height);
-    img[3]->setSrcRect(get_backroundLocation4(), y, width, height);
-    img[4]->setSrcRect(get_backroundLocation5(), y, width, height);
-
+    img->setSrcRect(get_backroundLocation(), y, width, height);
     // set the new location applicable to the users screen dimensions:
-    img[0]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-    img[1]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-    img[2]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-    img[3]->setDstRect(x, y, ScreenWidth, ScreenHeight);
-    img[4]->setDstRect(x, y, ScreenWidth, ScreenHeight);
+    img->setDstRect(x, y, ScreenWidth, ScreenHeight);
 
-    SDL_Rect src = img[0]->accessSrcRect();
-    SDL_Rect dst = img[0]->accessDstRect();
-    SDL_Rect src2 = img[1]->accessSrcRect();
-    SDL_Rect dst2 = img[1]->accessDstRect();
-    SDL_Rect src3 = img[2]->accessSrcRect();
-    SDL_Rect dst3 = img[2]->accessDstRect();
-    SDL_Rect src4 = img[3]->accessSrcRect();
-    SDL_Rect dst4 = img[3]->accessDstRect();
-    SDL_Rect src5 = img[4]->accessSrcRect();
-    SDL_Rect dst5 = img[4]->accessDstRect();
 
-    SDL_RenderCopy(this->renderer, img[0]->accessTexture(), &src, &dst);
-    SDL_RenderCopy(this->renderer, img[1]->accessTexture(), &src2, &dst2);
-    SDL_RenderCopy(this->renderer, img[2]->accessTexture(), &src3, &dst3);
-    SDL_RenderCopy(this->renderer, img[3]->accessTexture(), &src4, &dst4);
-    SDL_RenderCopy(this->renderer, img[4]->accessTexture(), &src5, &dst5);
+    SDL_Rect src = img->accessSrcRect();
+    SDL_Rect dst = img->accessDstRect();
+
+    SDL_RenderCopy(this->renderer, img->accessTexture(), &src, &dst);
 }
 
 // function to add appropriate image(s) to a tiles vector of Tile obj's
 // it will contain the rendered texture of the given img
 void Engine ::addTiles(const char *filename)
-{
+{ 
+    int tileID = 0;
     Tile art;
     art.surf = IMG_Load(filename);
     art.tex = SDL_CreateTextureFromSurface(renderer, art.surf);
     SDL_FreeSurface(art.surf);
+    art.ID = tileID + (tiles.size());
     tiles.emplace_back(art);
 }
 
 // renders grid on screen
-void Engine ::grid(int gridSize, int ScreenWidth, int ScreenHeight)
+void Engine :: grid(int gridSize, int ScreenWidth, int ScreenHeight)
 {
     int maxRows = ScreenHeight / gridSize;
 
@@ -166,7 +148,7 @@ void Engine ::initializeTileMap(int gridSize, int sWidth, int sHeight)
 
     const int numRows = sHeight / gridSize;
     const int numCols = sWidth / gridSize;
-    this->tileMap.assign(numRows, std::vector<int>(numCols, -1));
+    std::ifstream inputFile("save_data.txt");
 }
 
 void Engine ::tilemap(int gridSize, int ScreenWidth, int ScreenHeight, int mouseX, int mouseY)
@@ -179,13 +161,16 @@ void Engine ::tilemap(int gridSize, int ScreenWidth, int ScreenHeight, int mouse
     tileMap[cellY][cellX] = 0;
 }
 
-void Engine ::changeTile()
+void Engine ::changeTile(int i)
 {
-    int maxNum = tiles.size();
-    if (tileNum < maxNum)
-        ++tileNum;
-    if (tileNum == maxNum)
-        tileNum = 0;
+    for(int x = 0; x<tiles.size();x++)
+    {
+        if(tiles[x].ID == i)
+        {
+            selectedTileTexture = tiles[x].tex;
+            return;
+        }
+    }
 }
 
 void Engine ::renderTileMap()
@@ -198,24 +183,43 @@ void Engine ::renderTileMap()
             if (tileID != -1)
             {
                 SDL_Rect tileRect = {col * gridSize, row * gridSize, gridSize, gridSize};
-                SDL_RenderCopy(renderer, tiles[tileNum].tex, NULL, &tileRect);
+                SDL_RenderCopy(renderer, selectedTileTexture, NULL, &tileRect);
             }
         }
     }
 }
 
-bool Engine::resolveCollisions(Sprite *sprite)
+
+void Engine :: save()
+{
+    std :: ofstream save_File("save_data.txt");
+    if(save_File.is_open())
+    {
+        for (int row = 0; row < tileMap.size(); ++row)
+        {
+            for (int col = 0; col < tileMap[0].size(); ++col)
+            {
+                save_File << tileMap[row][col] << " ";
+            }
+            save_File << "/n";
+        }
+        save_File.close();
+    }
+}
+
+
+bool Engine::resolveCollisions(Sprite* sprite) 
 {
     SDL_Rect spriteBoundingBox = sprite->accessToScreen();
-    for (int row = 0; row < tileMap.size(); ++row)
+    for (int row = 0; row < tileMap.size(); ++row) 
     {
-        for (int col = 0; col < tileMap[0].size(); ++col)
+        for (int col = 0; col < tileMap[0].size(); ++col) 
         {
-            if (tileMap[row][col] == 0)
+            if (tileMap[row][col] == 0) 
             {
                 SDL_Rect tileBoundingBox = {col * gridSize, row * gridSize, gridSize, gridSize};
                 SDL_Rect intersection;
-                if (SDL_IntersectRect(&spriteBoundingBox, &tileBoundingBox, &intersection) == SDL_TRUE)
+                if (SDL_IntersectRect(&spriteBoundingBox, &tileBoundingBox, &intersection) == SDL_TRUE) 
                 {
                     // Collision detected
 
@@ -231,28 +235,24 @@ bool Engine::resolveCollisions(Sprite *sprite)
                     int overlapRight = (spriteBoundingBox.x + spriteBoundingBox.w) - tileBoundingBox.x;
                     int overlapLeft = (tileBoundingBox.x + tileBoundingBox.w) - spriteBoundingBox.x;
                     int overlapTop = (tileBoundingBox.y + tileBoundingBox.h) - spriteBoundingBox.y;
-                    int overlapBottom = (spriteBoundingBox.y + spriteBoundingBox.h) - tileBoundingBox.y;
+                    int overlapBottom = (spriteBoundingBox.y + spriteBoundingBox.h)-5 - tileBoundingBox.y;
 
                     // Determine which side(s) have collision and reverse momentum accordingly
-                    if (overlapRight > 0 && overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom)
+                    if (overlapRight > 0 && overlapRight < overlapLeft && overlapRight < overlapTop && overlapRight < overlapBottom) 
                     {
                         // Collision on the right side of the sprite
                         sprite->reverseHorizontalMomentum();
-                    }
-                    else if (overlapLeft > 0 && overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom)
+                    } else if (overlapLeft > 0 && overlapLeft < overlapRight && overlapLeft < overlapTop && overlapLeft < overlapBottom) 
                     {
                         // Collision on the left side of the sprite
                         sprite->reverseHorizontalMomentum();
-                    }
-                    else if (overlapTop > 0 && overlapTop < overlapRight && overlapTop < overlapLeft && overlapTop < overlapBottom)
+                    } else if (overlapTop > 0 && overlapTop < overlapRight && overlapTop < overlapLeft && overlapTop < overlapBottom) 
                     {
                         // Collision on the top side of the sprite
                         sprite->reverseVerticalMomentum();
-                    }
-                    else if (overlapBottom > 0 && overlapBottom < overlapRight && overlapBottom < overlapLeft && overlapBottom < overlapTop)
+                    } else if (overlapBottom > 0 && overlapBottom < overlapRight && overlapBottom < overlapLeft && overlapBottom < overlapTop) 
                     {
                         // Collision on the bottom side of the sprite
-                        sprite->reverseVerticalMomentum();
                     }
                     return true; // Exit after the first collision detected
                 }
@@ -261,6 +261,9 @@ bool Engine::resolveCollisions(Sprite *sprite)
     }
     return false;
 }
+
+
+
 
 void Engine ::applyGravity(Sprite *sprite)
 {
@@ -280,11 +283,13 @@ void Engine ::moveRight(Sprite *sprite, int speed)
     sprite->spriteMove();
 }
 
+
 void Engine ::moveLeft(Sprite *sprite, int speed)
 {
     sprite->setxMaxSpeed(-speed);
     sprite->spriteMove();
 }
+
 
 void Engine ::jump(Sprite *sprite, int height)
 {
@@ -306,5 +311,5 @@ void Engine ::respawn_x(Sprite *sprite)
 void Engine ::spawn(Sprite *sprite)
 {
     std::cout << "the value of x animate is.." << sprite->get_animatex() << std::endl;
-    sprite->selectSprite(0, 0, 128);
+    sprite->selectSprite(0, 0, 64);
 }
