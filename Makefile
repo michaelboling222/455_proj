@@ -1,5 +1,5 @@
 CPP := g++
-SRC :=  src/main.cpp src/engine.cpp src/image.cpp src/sprite.cpp
+SRC :=  src/main.cpp src/engine.cpp src/image.cpp src/sprite.cpp src/tilemap.cpp
 HDR := -Iinclude
 LD := -lSDL2 -lSDL2_image
 
