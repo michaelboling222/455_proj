@@ -22,7 +22,7 @@ int main()
     game->addTiles("./test_assets/Dirt.png");
     game->addTiles("./test_assets/deepDirt.png");
     game->addTiles("./test_assets/Grass.png");
-    game->changeTile(2);
+    game->changeTile(0);
     game->setGridSize(32);
     int gridSize = game->getGridSize();
     game->initializeTileMap(gridSize, ScreenWidth, ScreenHeight);

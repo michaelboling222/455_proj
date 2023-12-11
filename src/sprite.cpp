@@ -94,7 +94,7 @@ void Sprite ::spriteMove()
 
 void Sprite ::spriteJump()
 {
-    const double accelerate =  1.1;
+    const double accelerate =  10.0;
     if(stateJump)
     {
         if(yVelocity < yMaxSpeed)
@@ -110,11 +110,13 @@ void Sprite ::spriteJump()
 }
 
 
+
 void Sprite ::spriteRespawn()
 {
     toScreen.x = 0;
     toScreen.y = 0;
 }
+
 
 
 void Sprite ::x_spriteRespawn()
@@ -123,6 +125,7 @@ void Sprite ::x_spriteRespawn()
     toScreen.y = temp;
     editToScreen(0, toScreen.y, 0, 0);
 }   
+
 
 
 void Sprite ::setState()

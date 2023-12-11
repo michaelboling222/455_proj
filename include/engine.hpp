@@ -72,7 +72,6 @@ public:
     void setGridSize(int i) { this->gridSize = i; }
     int getGridSize() { return this->gridSize; }
     void save();
-    void load();
 
     void setRenderCopy(Image *, int x, int y, int width, int height, int ScreenWidth, int ScreenHeight);
     void setDeltaTime(double delt) { deltaTime = delt; }
@@ -108,7 +107,7 @@ private:
     std::vector<Tile> tiles;
     std::vector<std::vector<int> > tileMap;
     Uint64 lastFrameTime;
-    SDL_Texture* selectedTileTexture;
+    int selectedTileID;
     double gravity = 400;
     double deltaTime;
     int gridSize;

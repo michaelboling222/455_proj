@@ -114,12 +114,10 @@ void Engine::setRenderCopy(Image *img, int x, int y, int width, int height, int 
 // it will contain the rendered texture of the given img
 void Engine ::addTiles(const char *filename)
 { 
-    int tileID = 0;
     Tile art;
     art.surf = IMG_Load(filename);
     art.tex = SDL_CreateTextureFromSurface(renderer, art.surf);
     SDL_FreeSurface(art.surf);
-    art.ID = tileID + (tiles.size());
     tiles.emplace_back(art);
 }
 
@@ -149,6 +147,19 @@ void Engine ::initializeTileMap(int gridSize, int sWidth, int sHeight)
     const int numRows = sHeight / gridSize;
     const int numCols = sWidth / gridSize;
     std::ifstream inputFile("save_data.txt");
+    this->tileMap.assign(numRows, std::vector<int>(numCols, -1));
+    if (inputFile.is_open()) 
+    {
+        for (int row = 0; row < numRows; ++row) 
+        {
+            for (int col = 0; col < numCols; ++col) 
+            {
+                inputFile >> tileMap[row][col];
+            }
+        }
+        inputFile.close();
+
+    }
 }
 
 void Engine ::tilemap(int gridSize, int ScreenWidth, int ScreenHeight, int mouseX, int mouseY)
@@ -158,18 +169,14 @@ void Engine ::tilemap(int gridSize, int ScreenWidth, int ScreenHeight, int mouse
     int cellX = mouseX / gridSize;
     int cellY = mouseY / gridSize;
 
-    tileMap[cellY][cellX] = 0;
+    tileMap[cellY][cellX] = selectedTileID;
 }
 
 void Engine ::changeTile(int i)
 {
-    for(int x = 0; x<tiles.size();x++)
+    if (i >= 0 && i < tiles.size())
     {
-        if(tiles[x].ID == i)
-        {
-            selectedTileTexture = tiles[x].tex;
-            return;
-        }
+        selectedTileID = i;
     }
 }
 
@@ -183,7 +190,7 @@ void Engine ::renderTileMap()
             if (tileID != -1)
             {
                 SDL_Rect tileRect = {col * gridSize, row * gridSize, gridSize, gridSize};
-                SDL_RenderCopy(renderer, selectedTileTexture, NULL, &tileRect);
+                SDL_RenderCopy(renderer, tiles[tileID].tex, NULL, &tileRect);
             }
         }
     }
@@ -201,7 +208,6 @@ void Engine :: save()
             {
                 save_File << tileMap[row][col] << " ";
             }
-            save_File << "/n";
         }
         save_File.close();
     }
@@ -215,7 +221,7 @@ bool Engine::resolveCollisions(Sprite* sprite)
     {
         for (int col = 0; col < tileMap[0].size(); ++col) 
         {
-            if (tileMap[row][col] == 0) 
+            if (tileMap[row][col] != -1) 
             {
                 SDL_Rect tileBoundingBox = {col * gridSize, row * gridSize, gridSize, gridSize};
                 SDL_Rect intersection;
