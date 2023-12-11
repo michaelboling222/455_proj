@@ -67,34 +67,30 @@ void Sprite ::spriteGrav()
 void Sprite ::spriteMove()
 {
     const float accelerationRate = 1.1f;
+
     if (xMaxSpeed > 0)
-    {
+    { // Moving right (positive direction)
         if (xVelocity < xMaxSpeed)
         {
-            if(xVelocity==0)
-                xVelocity+=2;
             xVelocity += accelerationRate;
             editToScreen(xVelocity, 0, 0, 0);
         }
     }
 
     else
-    {
+    { // Moving left (negative direction)
         if (xVelocity > xMaxSpeed)
         {
-            if(xVelocity==0)
-                xVelocity-=2;
             xVelocity -= accelerationRate;
             editToScreen(xVelocity, 0, 0, 0);
         }
     }
-
 }
 
 
 void Sprite ::spriteJump()
 {
-    const double accelerate =  10.0;
+    const double accelerate =  1.1;
     if(stateJump)
     {
         if(yVelocity < yMaxSpeed)
@@ -110,13 +106,11 @@ void Sprite ::spriteJump()
 }
 
 
-
 void Sprite ::spriteRespawn()
 {
     toScreen.x = 0;
     toScreen.y = 0;
 }
-
 
 
 void Sprite ::x_spriteRespawn()
@@ -125,7 +119,6 @@ void Sprite ::x_spriteRespawn()
     toScreen.y = temp;
     editToScreen(0, toScreen.y, 0, 0);
 }   
-
 
 
 void Sprite ::setState()
@@ -184,6 +177,7 @@ void Sprite ::deccelerate()
     if (yVelocity > 0)
     {
         yVelocity -= decelerationRate;
+        std::cout<<yVelocity<<std::endl;
         if(yVelocity <0)
         {
             yVelocity = 0;
@@ -206,7 +200,7 @@ void Sprite::animate(int idleRow, int walkRow, int jumpRow, int numberOfColumns)
         animationCounter = 0;
         xVal = toScreen.x;
         yVal = toScreen.y;
-        selectSprite(idleVal, idleRow, 64);
+        selectSprite(idleVal, idleRow, 128);
         editToScreen(xVal, yVal, 0, 0);
         idleVal++;
         if(idleVal == numberOfColumns)
@@ -225,7 +219,7 @@ void Sprite::animate(int idleRow, int walkRow, int jumpRow, int numberOfColumns)
         animationCounter = 0;
         xVal = toScreen.x;
         yVal = toScreen.y;
-        selectSprite(idleVal, walkRow, 64);
+        selectSprite(idleVal, walkRow, 128);
         editToScreen(xVal, yVal, 0, 0);
         idleVal++;
         if(idleVal == numberOfColumns)
@@ -245,7 +239,7 @@ void Sprite::animate(int idleRow, int walkRow, int jumpRow, int numberOfColumns)
         animationCounter = 0;
         xVal = toScreen.x;
         yVal = toScreen.y;
-        selectSprite(idleVal, walkRow, 64);
+        selectSprite(idleVal, walkRow, 128);
         editToScreen(xVal, yVal, 0, 0);
         idleVal++;
         if(idleVal == numberOfColumns)
@@ -256,11 +250,13 @@ void Sprite::animate(int idleRow, int walkRow, int jumpRow, int numberOfColumns)
 
 void Sprite :: reverseHorizontalMomentum()
 {
-    editToScreen(-xVelocity, 0, 0, 0);
+    setxMaxSpeed(0);
+    spriteMove();
+    std::cout<<"Being"<<std::endl;
 }
+
 
 void Sprite :: reverseVerticalMomentum()
 {
-    editToScreen(0, xMaxSpeed, 0,0);
+    yVelocity = -yVelocity;
 }
-

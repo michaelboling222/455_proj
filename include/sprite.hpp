@@ -29,6 +29,7 @@ public:
     void set_animatey(int y) { animate_y = y; }
     void setState();
     void setJumpState();
+
     // getters:
     double ret_xcord() { return x_cord; }
     double ret_ycord() { return y_cord; }
