@@ -19,6 +19,7 @@ public:
     void animate(int idleRow, int walkRow, int jumpRow, int numberOfColumns);
 
     // setters:
+    void setJumpVelocity(int x) {jumpVelocity = x;}
     void setyVelocity(float v) { yVelocity = v; }
     void setxVelocity(float v) { xVelocity = v; }
     void setxMaxSpeed(float v) { xMaxSpeed = v; }
@@ -30,6 +31,7 @@ public:
     void setState();
     void setJumpState();
     // getters:
+    int getJumpVelocity() {return jumpVelocity;}
     double ret_xcord() { return x_cord; }
     double ret_ycord() { return y_cord; }
     int get_animatex() { return animate_x; }
@@ -66,6 +68,7 @@ private:
     double yVelocity;
     double xVelocity;
 
+    double jumpVelocity;
     bool stateWalk;
     bool stateIdle;
     bool stateJump;

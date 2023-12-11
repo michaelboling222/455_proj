@@ -84,7 +84,7 @@ int main()
                 break;
 
             case SDLK_SPACE:
-                game->jump(sprite, 10.0);
+                game->jump(sprite, 10);
                 break;
 
             case SDLK_4:
@@ -110,7 +110,6 @@ int main()
         sprite->deccelerate();
         sprite->setState();
         sprite->animate(0,1, 2, 12);
-        sprite->spriteJump();
         SDL_RenderPresent(game->renderer);
     }
 

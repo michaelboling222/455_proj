@@ -321,9 +321,20 @@ void Engine ::jump(Sprite *sprite, double height)
 {
     if (resolveCollisions(sprite))
     {
-        sprite->setyMaxSpeed(height);
-        sprite->setJumpState();
+
+        for (int y = 0; y < height; y++)
+        {
+
+            sprite->setJumpVelocity(-y);
+            sprite->spriteJump();
+
+            std::cout << "the val of jump vel is:" << sprite->getJumpVelocity() << std::endl;
+        }
+
+        // std::cout << "MOVING!!" << std::endl;
     }
+    else
+        sprite->setJumpVelocity(0);
 }
 void Engine ::respawn(Sprite *sprite)
 {

@@ -94,20 +94,8 @@ void Sprite ::spriteMove()
 
 void Sprite ::spriteJump()
 {
-    const double accelerate =  8.0;
-    if(stateJump)
-    {
-        if(yVelocity < yMaxSpeed)
-        {
-            yVelocity += accelerate;
-            editToScreen(0, -yVelocity, 0, 0);
-        }
-        else
-        {
-            editToScreen(0, -yVelocity, 0, 0);
-            stateJump = false;
-        }   
-    }
+    if (this->jumpVelocity < 0)
+        editToScreen(0, jumpVelocity, 0, 0);
 }
 
 
@@ -143,19 +131,12 @@ void Sprite ::setState()
         stateIdle = true;
         stateJump = false;
     }
-    else  if(yVelocity != 0)
+    else  if(jumpVelocity != 0)
     {
         stateWalk = false;
         stateIdle = false;
+        stateJump = true;
     }
-}
-
-
-void Sprite :: setJumpState()
-{
-    stateWalk = false;
-    stateIdle = false;
-    stateJump = true;
 }
 
 
@@ -182,14 +163,9 @@ void Sprite ::deccelerate()
         }
         editToScreen(xVelocity, 0, 0, 0);
     }
-    if (yVelocity >= yMaxSpeed)
+    if (jumpVelocity > 0)
     {
-        stateJump = false;
-        yVelocity -= 10;
-        if(yVelocity < 0)
-        {
-            yVelocity = 0;
-        }
+        jumpVelocity -= decelerationRate;
     }
 }
 
